@@ -1,0 +1,114 @@
+{
+  "users": [
+    {
+      "user_id": 1,
+      "full_name": "Eugene",
+      "email": "eugene@example.com",
+      "phone_number": "0711000001",
+      "password": "hashed_password",
+      "created_at": "2025-06-01T10:00:00Z",
+      "profile_picture": "https://i.pravatar.cc/150?img=1"
+    },
+    {
+      "user_id": 2,
+      "full_name": "Diana",
+      "email": "diana@example.com",
+      "phone_number": "0711000002",
+      "password": "hashed_password",
+      "created_at": "2025-06-01T10:00:00Z",
+      "profile_picture": "https://i.pravatar.cc/150?img=2"
+    },
+    {
+      "user_id": 3,
+      "full_name": "Brian",
+      "email": "brian@example.com",
+      "phone_number": "0711000003",
+      "password": "hashed_password",
+      "created_at": "2025-06-01T10:00:00Z",
+      "profile_picture": "https://i.pravatar.cc/150?img=3"
+    }
+  ],
+  "groups": [
+    {
+      "group_id": 1,
+      "group_name": "Tech Builders",
+      "group_code": "CHA001",
+      "description": "Chama for developing tech projects",
+      "created_by": 1,
+      "created_at": "2025-06-01T10:00:00Z"
+    }
+  ],
+  "group_members": [
+    { "group_member_id": 1, "user_id": 1, "group_id": 1, "role": "Chairperson", "joined_at": "2025-06-01T10:05:00Z" },
+    { "group_member_id": 2, "user_id": 2, "group_id": 1, "role": "Treasurer", "joined_at": "2025-06-01T10:06:00Z" },
+    { "group_member_id": 3, "user_id": 3, "group_id": 1, "role": "Member", "joined_at": "2025-06-01T10:07:00Z" }
+  ],
+  "goals": [
+    {
+      "goal_id": 1,
+      "group_id": 1,
+      "goal_name": "Buy Laptop",
+      "target_amount": 90000,
+      "deadline": "2025-07-30",
+      "created_at": "2025-06-01T11:00:00Z"
+    }
+  ],
+  "contributions": [
+    {
+      "contribution_id": 1,
+      "goal_id": 1,
+      "user_id": 3,
+      "amount": 1500,
+      "contributed_at": "2025-06-01T12:00:00Z"
+    }
+  ],
+  "transactions": [
+    {
+      "transaction_id": 1,
+      "user_id": 3,
+      "group_id": 1,
+      "mpesa_code": "MPESA12345",
+      "amount": 1500,
+      "status": "Success",
+      "transaction_date": "2025-06-01T12:01:00Z"
+    }
+  ],
+  "fines": [
+    {
+      "fine_id": 1,
+      "user_id": 3,
+      "group_id": 1,
+      "amount": 100,
+      "reason": "Late contribution",
+      "status": "Unpaid"
+    }
+  ],
+  "meeting_notes": [
+    {
+      "note_id": 1,
+      "group_id": 1,
+      "uploaded_by": 2,
+      "title": "June Planning",
+      "file_url": "https://example.com/notes/june.pdf",
+      "uploaded_at": "2025-06-02T10:00:00Z"
+    }
+  ],
+  "notifications": [
+    {
+      "notification_id": 1,
+      "user_id": 3,
+      "message": "You have a new fine for missing the deadline.",
+      "status": "Unread",
+      "created_at": "2025-06-02T12:00:00Z"
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": 1,
+      "group_id": 1,
+      "created_by": 1,
+      "rule_description": "All contributions must be made by the 30th of every month.",
+      "created_at": "2025-06-01T14:00:00Z"
+    }
+  ]
+}
