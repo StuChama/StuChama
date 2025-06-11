@@ -1,16 +1,31 @@
-// src/App.js
+import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import UserDashboardPage from './pages/UserDashboardPage';
 
 function App() {
+  const [isSignedUp, setIsSignedUp] = useState(false);
+
+  const handleSignUp = () => {
+    // Simulate successful signup
+    setIsSignedUp(true);
+  };
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<UserDashboardPage />} />
-        {/* Add more routes here as needed */}
-      </Routes>
-    </Router>
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
   );
 }
 

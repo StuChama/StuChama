@@ -1,0 +1,95 @@
+/* General styles for the Auth form */
+body {
+  background-image: url('/public/images/background.jpg'); /* Ensure the image is placed in the public/images folder */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+/* The square form container */
+.auth-form {
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+  width: 350px;
+  height: 430px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Title text */
+.auth-form h1 {
+  font-size: 24px;
+  color: #09122C;
+  margin-bottom: 5px;
+}
+
+.auth-form h2 {
+  margin: 5px 0 10px;
+  font-size: 20px;
+  color: #BE3144;
+}
+
+/* Inputs */
+.auth-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Button */
+.auth-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #BE3144;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.auth-form button:hover {
+  background-color: #872341;
+}
+
+/* Remember Me */
+.remember-me {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #09122C;
+  justify-content: flex-start;
+}
+
+.remember-me input {
+  margin-right: 8px;
+}
+
+/* Already have an account */
+.auth-form .switch {
+  font-size: 14px;
+  margin-top: 10px;
+  color: #09122C;
+}
+
+.auth-form .switch a {
+  color: #BE3144;
+  text-decoration: none;
+  font-weight: bold;
+}
