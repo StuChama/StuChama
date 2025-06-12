@@ -1,30 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import SignupForm from './components/SignupPage'; // Adjust path as needed
 
 function App() {
-  const [isSignedUp, setIsSignedUp] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const handleSignUp = () => {
-    // Simulate successful signup
-    setIsSignedUp(true);
+  const handleSignup = (userData) => {
+    setUser(userData); // Save logged-in user info after signup
+    console.log("Signed up user:", userData);
   };
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {!user ? (
+        <SignupForm onSignup={handleSignup} />
+      ) : (
+        <div>
+          <h1>Welcome, {user.full_name}!</h1>
+          {/* Redirect or show dashboard */}
+        </div>
+      )}
     </div>
   );
 }
