@@ -9,7 +9,7 @@ export default function SignupForm({ onSignup }) {
     password: ''
   });
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -17,7 +17,7 @@ export default function SignupForm({ onSignup }) {
     }));
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await fetch('http://localhost:5000/api/auth/signup', {
       method: 'POST',
@@ -27,57 +27,58 @@ export default function SignupForm({ onSignup }) {
       body: JSON.stringify(formData)
     });
 
-    if (res.ok) onSignup(await res.json());
-    else alert('Signup failed');
+    if (res.ok) {
+      const data = await res.json();
+      onSignup(data);
+    } else {
+      alert('Signup failed');
+    }
   };
 
-  return React.createElement(
-    'form',
-    { className: 'auth-form', onSubmit: handleSubmit },
-    React.createElement('h1', null, 'New to StuChama?'),
-    React.createElement('h2', null, 'Sign Up'),
+  return (
+    <form className="auth-form" onSubmit={handleSubmit}>
+      <h1>New to StuChama?</h1>
+      <h2>Sign Up</h2>
 
-    React.createElement('input', {
-      name: 'full_name',
-      placeholder: 'Full Name',
-      onChange: handleChange,
-      value: formData.full_name,
-      required: true
-    }),
+      <input
+        name="full_name"
+        placeholder="Full Name"
+        value={formData.full_name}
+        onChange={handleChange}
+        required
+      />
 
-    React.createElement('input', {
-      name: 'email',
-      type: 'email',
-      placeholder: 'Email',
-      onChange: handleChange,
-      value: formData.email,
-      required: true
-    }),
+      <input
+        name="email"
+        type="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+      />
 
-    React.createElement('input', {
-      name: 'phone_number',
-      type: 'tel',
-      placeholder: 'Phone Number (optional)',
-      onChange: handleChange,
-      value: formData.phone_number
-    }),
+      <input
+        name="phone_number"
+        type="tel"
+        placeholder="Phone Number (optional)"
+        value={formData.phone_number}
+        onChange={handleChange}
+      />
 
-    React.createElement('input', {
-      name: 'password',
-      type: 'password',
-      placeholder: 'Password',
-      onChange: handleChange,
-      value: formData.password,
-      required: true
-    }),
+      <input
+        name="password"
+        type="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+      />
 
-    React.createElement('button', { type: 'submit' }, 'Sign Up'),
+      <button type="submit">Sign Up</button>
 
-    React.createElement(
-      'div',
-      { className: 'switch' },
-      'Already have an account? ',
-      React.createElement('a', { href: '/login' }, 'Log In')
-    )
+      <div className="switch">
+        Already have an account? <a href="/login">Log In</a>
+      </div>
+    </form>
   );
 }
