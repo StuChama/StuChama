@@ -1,6 +1,6 @@
 // src/components/ChamaGrid.js
 import React, { useEffect, useState } from 'react';
-import ChamaCard from './ChamaCard';
+import ChamaCard from '../ChamaCard/ChamaCard';
 import '../App.css';
 
 function ChamaGrid() {

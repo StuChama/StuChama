@@ -1,8 +1,8 @@
 // src/pages/DashboardPage.js
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import Sidebar from '../components/Sidebar';
-import ChamaGrid from '../components/ChamaGrid';
+import Sidebar from '../components/Sidebar/Sidebar';
+import ChamaGrid from '../components/ChamaGrid/ChamaGrid';
 
 function UserDashboardPage() {
   return (
