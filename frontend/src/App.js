@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import SignupForm from './components/SignupPage';
-import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignUpForm/SignupForm';
+import LoginForm from './components/LoginForm/LoginForm';
 import HomePage from './components/HomePage';
 
 const Dashboard = ({ user }) => (

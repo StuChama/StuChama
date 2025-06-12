@@ -1,6 +1,5 @@
-/* General styles for the Auth form */
-body {
-  background-image: url('/public/images/background.jpg'); /* Ensure the image is placed in the public/images folder */
+.loginPage {
+  background-image: url("../../assets/background.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -12,35 +11,32 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* The square form container */
-.auth-form {
+.authForm {
   background-color: rgba(255, 255, 255, 0.95);
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
   width: 350px;
-  height: 430px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Title text */
-.auth-form h1 {
+.title {
   font-size: 24px;
-  color: #09122C;
+  color: #09122c;
   margin-bottom: 5px;
 }
 
-.auth-form h2 {
+.subtitle {
   margin: 5px 0 10px;
   font-size: 20px;
-  color: #BE3144;
+  color: #be3144;
 }
 
-/* Inputs */
-.auth-form input {
+.input {
   width: 100%;
   padding: 10px;
   margin: 6px 0;
@@ -49,11 +45,10 @@ body {
   font-size: 14px;
 }
 
-/* Button */
-.auth-form button {
+.button {
   width: 100%;
   padding: 10px;
-  background-color: #BE3144;
+  background-color: #be3144;
   color: white;
   border: none;
   border-radius: 6px;
@@ -62,34 +57,18 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.auth-form button:hover {
+.button:hover {
   background-color: #872341;
 }
 
-/* Remember Me */
-.remember-me {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin-top: 5px;
-  font-size: 14px;
-  color: #09122C;
-  justify-content: flex-start;
-}
-
-.remember-me input {
-  margin-right: 8px;
-}
-
-/* Already have an account */
-.auth-form .switch {
+.switch {
   font-size: 14px;
   margin-top: 10px;
-  color: #09122C;
+  color: #09122c;
 }
 
-.auth-form .switch a {
-  color: #BE3144;
+.switch a {
+  color: #be3144;
   text-decoration: none;
   font-weight: bold;
 }
