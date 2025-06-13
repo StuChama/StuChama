@@ -4,7 +4,10 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
+
+
 export default function SignupForm({ onSignup }) {
+
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -32,6 +35,7 @@ export default function SignupForm({ onSignup }) {
 
       if (response.data) {
         onSignup(response.data); // optional callback
+      
         toast.success("Signup successful!");
         navigate('/login');
       }

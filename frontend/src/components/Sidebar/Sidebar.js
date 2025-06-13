@@ -1,17 +1,59 @@
 import React from 'react';
-import '../App.css';
+import styles from './Sidebar.module.css';
 
-const Sidebar = () => {
+const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed }) => {
+  const handleItemClick = (tabName) => {
+    setActiveTab(tabName);
+  };
+
   return (
-    <div className="sidebar">
-      <div className="profile">
-        <img src="https://i.pravatar.cc/150?img=1" alt="User" />
+    <div className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
+      <div className={styles.sidebarHeader}>
+        {!collapsed && <h2>MY CHAMAS</h2>}
+        <button 
+          className={styles.collapseBtn}
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          {collapsed ? '»' : '«'}
+        </button>
       </div>
-      <nav>
-        <button className="nav-btn">🏠 Home</button>
-        <button className="nav-btn">⚙️ Settings</button>
-        <button className="nav-btn">🚪 Logout</button>
-      </nav>
+      
+      <ul className={styles.sidebarMenu}>
+        <li 
+          className={`${styles.menuItem} ${activeTab === 'home' ? styles.active : ''}`}
+          onClick={() => handleItemClick('home')}
+        >
+          {collapsed ? 'H' : 'HOME'}
+        </li>
+        
+        <li 
+          className={`${styles.menuItem} ${activeTab === 'settings' ? styles.active : ''}`}
+          onClick={() => handleItemClick('settings')}
+        >
+          {collapsed ? 'S' : 'SETTINGS'}
+        </li>
+        
+        <li 
+          className={`${styles.menuItem} ${activeTab === 'logout' ? styles.active : ''}`}
+          onClick={() => handleItemClick('logout')}
+        >
+          {collapsed ? 'L' : 'LOGOUT'}
+        </li>
+        
+        <li 
+          className={`${styles.menuItem} ${activeTab === 'create-chama' ? styles.active : ''}`}
+          onClick={() => handleItemClick('create-chama')}
+        >
+          {collapsed ? 'C' : 'CREATE CHAMA'}
+        </li>
+        
+        <li 
+          className={`${styles.menuItem} ${activeTab === 'join-chama' ? styles.active : ''}`}
+          onClick={() => handleItemClick('join-chama')}
+        >
+          {collapsed ? 'J' : 'JOIN CHAMA'}
+        </li>
+      </ul>
     </div>
   );
 };

@@ -1,29 +1,25 @@
-// src/components/ChamaGrid.js
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ChamaCard from '../ChamaCard/ChamaCard';
-import '../App.css';
+import styles from './ChamaGrid.module.css';
 
-function ChamaGrid() {
-  const [chamas, setChamas] = useState([]);
-
-  useEffect(() => {
-    fetch("http://localhost:3000/groups")
-      .then((res) => res.json())
-      .then((data) => setChamas(data))
-      .catch((err) => console.error("Failed to load chamas", err));
-  }, []);
-
+const ChamaGrid = ({ chamas }) => {
   return (
-    <div className="chama-grid">
-      {chamas.map((chama) => (
-        <ChamaCard
-          key={chama.id}
-          groupName={chama.groupName}
-          description={chama.description}
-        />
-      ))}
+    <div className={styles.chamaGrid}>
+      {chamas.length > 0 ? (
+        chamas.map(chama => (
+          <ChamaCard 
+            key={chama.group_id}
+            chama={chama}
+          />
+        ))
+      ) : (
+        <div className={styles.noChamas}>
+          <h3>You're not part of any chama yet</h3>
+          <p>Create a new chama or join an existing one to get started</p>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default ChamaGrid;

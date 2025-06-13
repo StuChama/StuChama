@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import styles from './login.module.css';
+import { useContext } from 'react';
+import { UserContext } from '../../context/UserContext';
 
 export default function LoginForm({ onLogin }) {
+  const { setUserToken, setCurrentUser } = useContext(UserContext);
   const [credentials, setCredentials] = useState({
     email: '',
     password: ''
@@ -32,7 +35,9 @@ export default function LoginForm({ onLogin }) {
 
       if (res.ok) {
         const data = await res.json();
-        onLogin(data);
+        setUserToken(data.token); // Save token in context
+        setCurrentUser(data.user); // Save user info in context
+        
         toast.success('Login successful!');
         navigate('/dashboard');
       } else {

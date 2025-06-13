@@ -1,11 +1,14 @@
 import React from 'react';
-import '../App.css';
+import styles from './DashboardHeader.module.css';
 
-const DashboardHeader = ({ username }) => {
+const DashboardHeader = ({ title, collapsed, userName }) => {
   return (
-    <div className="dashboard-header">
-      <h1>MY CHAMAS</h1>
-    </div>
+    <header className={`${styles.dashboardHeader} ${collapsed ? styles.collapsed : ''}`}>
+      <h1>{title}</h1>
+      <div className={styles.userActions}>
+        <span>Welcome, {userName}!</span>
+      </div>
+    </header>
   );
 };
 
