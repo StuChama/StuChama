@@ -1,5 +1,7 @@
+@import "../../assets/colors.css";
+
 .chamaCard {
-  background: white;
+  background: var(--yellow);
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -43,7 +45,7 @@
 }
 
 .viewBtn {
-  background-color: #3498db;
+  background-color: var(--deep-red);
   color: white;
   border: none;
   padding: 8px 15px;

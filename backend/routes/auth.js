@@ -10,7 +10,7 @@ const {
 router.post('/signup', registerUserController);
 router.post('/login', loginUserController);
 router.get('/me', (req, res, next) => {
-  console.log("🟢 /me route hit");
+  
   next();
 }, verifyToken, getCurrentUserController);
 
