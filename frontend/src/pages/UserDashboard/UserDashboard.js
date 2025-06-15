@@ -1,4 +1,5 @@
 import React, { useState, useEffect , useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import DashboardHeader from '../../components/DashboardHeader/DashboardHeader';
@@ -8,7 +9,7 @@ import JoinChamaModal from '../../components/JoinChamaModal/JoinChamaModal';
 import styles from './UserDashboard.module.css';
 
 const UserDashboard = () => {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, clearToken } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState('home');
   const [collapsed, setCollapsed] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -16,37 +17,43 @@ const UserDashboard = () => {
   const [chamas, setChamas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch user's chamas
   useEffect(() => {
     if (!currentUser) return;
-    
+    console.log('Current user:', currentUser);
+
     const fetchUserChamas = async () => {
       try {
         setLoading(true);
-        
-        // First, get the user's group memberships
-        const membersRes = await fetch(`http://localhost:3001/group_members?user_id=${currentUser.user_id}`);
-        if (!membersRes.ok) throw new Error('Failed to fetch group memberships');
-        const memberships = await membersRes.json();
-        
-        // Extract group IDs
-        const groupIds = memberships.map(m => m.group_id);
-        
-        // Get group details
-        const groupsRes = await fetch(`http://localhost:3001/groups?id=${groupIds.join('&id=')}`);
+
+        const groupsRes = await fetch('http://localhost:3001/groups');
         if (!groupsRes.ok) throw new Error('Failed to fetch groups');
         const groups = await groupsRes.json();
-        
-        // Merge group data with user role
-        const userChamas = groups.map(group => {
-          const membership = memberships.find(m => m.group_id === group.group_id);
-          return {
-            ...group,
-            userRole: membership.role
-          };
-        });
-        
+
+        const userChamas = [];
+
+        for (const group of groups) {
+          const membershipRes = await fetch(
+            `http://localhost:3001/group_members?group_id=${group.id}&user_id=${currentUser.user_id}`
+          );
+
+          if (!membershipRes.ok) {
+            console.warn(`Failed to fetch membership for group ${group.id}`);
+            continue;
+          }
+
+          const membership = await membershipRes.json();
+
+          if (membership.length > 0) {
+            userChamas.push({
+              ...group,
+              userRole: membership[0].role
+            });
+          }
+        }
+
         setChamas(userChamas);
       } catch (err) {
         setError(err.message);
@@ -60,7 +67,7 @@ const UserDashboard = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    
+
     if(tab === 'create-chama') {
       setShowCreateModal(true);
     } else if(tab === 'join-chama') {
@@ -80,9 +87,10 @@ const UserDashboard = () => {
     }
   };
 
+  console.log('Creating chama with user ID:', currentUser?.user_id);
+  
   const handleCreateChama = async (chamaData) => {
     try {
-      // Create new chama
       const res = await fetch('http://localhost:3001/groups', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -94,11 +102,10 @@ const UserDashboard = () => {
           group_code: `CHA${Math.floor(1000 + Math.random() * 9000)}`
         })
       });
-      
+
       if (!res.ok) throw new Error('Failed to create chama');
       const newGroup = await res.json();
-      
-      // Add user as chairperson
+
       await fetch('http://localhost:3001/group_members', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -109,7 +116,7 @@ const UserDashboard = () => {
           joined_at: new Date().toISOString()
         })
       });
-      
+
       setShowCreateModal(false);
       setActiveTab('home');
     } catch (err) {
@@ -119,29 +126,27 @@ const UserDashboard = () => {
 
   const handleJoinChama = async (joinData) => {
     try {
-      // First, find the chama by code
       const chamaRes = await fetch(`http://localhost:3001/groups?group_code=${joinData.code}`);
       if (!chamaRes.ok) throw new Error('Failed to find chama');
       const chamas = await chamaRes.json();
-      
+
       if (chamas.length === 0) {
         throw new Error('No chama found with that code');
       }
-      
+
       const chama = chamas[0];
-      
-      // Add user as member
+
       await fetch('http://localhost:3001/group_members', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: currentUser.user_id,
-          group_id: chama.group_id,
+          user_id: currentUser.id,
+          group_id: chama.id,
           role: 'Member',
           joined_at: new Date().toISOString()
         })
       });
-      
+
       setShowJoinModal(false);
       setActiveTab('home');
     } catch (err) {
@@ -151,9 +156,8 @@ const UserDashboard = () => {
   };
 
   const logout = () => {
-    // This would be handled by your auth context
-    console.log('Logging out...');
-    // In a real app, you'd clear auth tokens and redirect
+    clearToken();
+    navigate('/');
   };
 
   if (!currentUser) {
@@ -172,14 +176,14 @@ const UserDashboard = () => {
         collapsed={collapsed}
         setCollapsed={setCollapsed}
       />
-      
+
       <div className={styles.dashboardContent}>
         <DashboardHeader 
           title={getPageTitle()} 
           collapsed={collapsed} 
           userName={currentUser.full_name}
         />
-        
+
         <main className={styles.mainContent}>
           {activeTab === 'home' && (
             <>
@@ -196,7 +200,7 @@ const UserDashboard = () => {
               )}
             </>
           )}
-          
+
           {activeTab === 'settings' && (
             <div className={styles.settingsPage}>
               <h2>Account Settings</h2>
@@ -217,7 +221,7 @@ const UserDashboard = () => {
           )}
         </main>
       </div>
-      
+
       {showCreateModal && (
         <CreateChamaModal 
           onClose={() => {
@@ -227,7 +231,7 @@ const UserDashboard = () => {
           onCreate={handleCreateChama}
         />
       )}
-      
+
       {showJoinModal && (
         <JoinChamaModal 
           onClose={() => {

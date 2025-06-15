@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import styles from './login.module.css';
-import { useContext } from 'react';
 import { UserContext } from '../../context/UserContext';
 
-export default function LoginForm({ onLogin }) {
-  const { setUserToken, setCurrentUser } = useContext(UserContext);
+export default function LoginForm() {
+  const { setUserToken } = useContext(UserContext);
   const [credentials, setCredentials] = useState({
     email: '',
     password: ''
@@ -33,17 +32,17 @@ export default function LoginForm({ onLogin }) {
         body: JSON.stringify(credentials)
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        const data = await res.json();
-        setUserToken(data.token); // Save token in context
-        setCurrentUser(data.user); // Save user info in context
-        
+        localStorage.setItem('token', data.token);
+        setUserToken(data.token); // UserContext will fetch /users/me automatically
         toast.success('Login successful!');
-        navigate('/dashboard');
+        
+        console.log("🧠 userToken in localStorage:", localStorage.getItem('token'));
+        navigate('/');
       } else {
-        const errorData = await res.json();
-        const message = errorData?.message || 'Invalid email or password';
-        toast.error(message);
+        toast.error(data?.message || 'Invalid email or password');
       }
     } catch (err) {
       console.error('Login error:', err.message);
@@ -81,6 +80,9 @@ export default function LoginForm({ onLogin }) {
 
         <div className={styles.switch}>
           Don't have an account? <Link to="/signup">Sign Up</Link>
+        </div>
+        <div className={styles.switch}>
+          <Link to="/">Back</Link>
         </div>
       </form>
     </div>

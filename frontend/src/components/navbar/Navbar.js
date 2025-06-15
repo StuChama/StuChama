@@ -1,8 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styles from './navbar.module.css'; // This is correct if you're using CSS modules
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
+import styles from './navbar.module.css';
 
-const Navbar = ({ isAuthenticated }) => {
+const Navbar = () => {
+  const { userToken, currentUser, clearToken, setCurrentUser } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    clearToken();
+    setCurrentUser(null);
+    navigate('/');
+  };
+
+  const isAuthenticated = !!userToken && !!currentUser;
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.logo}>
@@ -16,7 +28,10 @@ const Navbar = ({ isAuthenticated }) => {
         <Link to="/resources">Resources</Link>
 
         {isAuthenticated ? (
-          <Link to="/dashboard" className={styles.dashboardBtn}>Dashboard</Link>
+          <>
+            <Link to="/dashboard" className={styles.dashboardBtn}>Dashboard</Link>
+            <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
+          </>
         ) : (
           <>
             <Link to="/signup" className={styles.signupBtn}>Sign Up</Link>
