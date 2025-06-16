@@ -85,7 +85,7 @@ const loginUserController = async (req, res) => {
 const getCurrentUserController = async (req, res) => {
   try {
     const userId = req.userId;
-    console.log("🧠 Token userId:", userId);
+    
 
     const result = await pool.query(
       'SELECT user_id, full_name, email, phone_number, created_at FROM users WHERE user_id = $1',

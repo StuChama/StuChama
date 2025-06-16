@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "full_name": "Eugene",
       "email": "eugene@example.com",
       "phone_number": "0711000001",
@@ -10,7 +10,7 @@
       "profile_picture": "https://i.pravatar.cc/150?img=1"
     },
     {
-      "id": 2,
+      "id": "2",
       "full_name": "Diana",
       "email": "diana@example.com",
       "phone_number": "0711000002",
@@ -19,7 +19,7 @@
       "profile_picture": "https://i.pravatar.cc/150?img=2"
     },
     {
-      "id": 3,
+      "id": "3",
       "full_name": "Brian",
       "email": "brian@example.com",
       "phone_number": "0711000003",
@@ -30,7 +30,7 @@
   ],
   "groups": [
     {
-      "id": 1,
+      "id": "1",
       "group_name": "Tech Builders",
       "group_code": "CHA001",
       "description": "Chama for developing tech projects",
@@ -44,25 +44,33 @@
       "created_by": 2,
       "created_at": "2025-06-15T15:13:05.784Z",
       "group_code": "CHA3131"
+    },
+    {
+      "id": "17b9",
+      "group_name": "Vinyl",
+      "description": "TER",
+      "created_by": 1,
+      "created_at": "2025-06-16T07:57:13.368Z",
+      "group_code": "CHA4826"
     }
   ],
   "group_members": [
     {
-      "id": 1,
+      "id": "1",
       "user_id": 1,
       "group_id": 1,
       "role": "Chairperson",
       "joined_at": "2025-06-01T10:05:00Z"
     },
     {
-      "id": 2,
+      "id": "2",
       "user_id": 2,
       "group_id": 1,
       "role": "Treasurer",
       "joined_at": "2025-06-01T10:06:00Z"
     },
     {
-      "id": 3,
+      "id": "3",
       "user_id": 3,
       "group_id": 1,
       "role": "Member",
@@ -74,11 +82,18 @@
       "group_id": "0947",
       "role": "Chairperson",
       "joined_at": "2025-06-15T15:13:06.413Z"
+    },
+    {
+      "id": "2840",
+      "user_id": 1,
+      "group_id": "17b9",
+      "role": "Chairperson",
+      "joined_at": "2025-06-16T07:57:13.436Z"
     }
   ],
   "goals": [
     {
-      "id": 1,
+      "id": "1",
       "group_id": 1,
       "goal_name": "Buy Laptop",
       "target_amount": 90000,
@@ -88,7 +103,7 @@
   ],
   "contributions": [
     {
-      "id": 1,
+      "id": "1",
       "goal_id": 1,
       "user_id": 3,
       "amount": 1500,
@@ -97,7 +112,7 @@
   ],
   "transactions": [
     {
-      "id": 1,
+      "id": "1",
       "user_id": 3,
       "group_id": 1,
       "mpesa_code": "MPESA12345",
@@ -108,7 +123,7 @@
   ],
   "fines": [
     {
-      "id": 1,
+      "id": "1",
       "user_id": 3,
       "group_id": 1,
       "amount": 100,
@@ -118,7 +133,7 @@
   ],
   "meeting_notes": [
     {
-      "id": 1,
+      "id": "1",
       "group_id": 1,
       "uploaded_by": 2,
       "title": "June Planning",
@@ -128,7 +143,7 @@
   ],
   "notifications": [
     {
-      "id": 1,
+      "id": "1",
       "user_id": 3,
       "message": "You have a new fine for missing the deadline.",
       "status": "Unread",
@@ -137,7 +152,7 @@
   ],
   "rules": [
     {
-      "id": 1,
+      "id": "1",
       "group_id": 1,
       "created_by": 1,
       "rule_description": "All contributions must be made by the 30th of every month.",
