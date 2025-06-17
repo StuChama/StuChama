@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 
 
-export default function SignupForm({ onSignup }) {
+export default function SignupForm() {
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -34,8 +34,8 @@ export default function SignupForm({ onSignup }) {
       );
 
       if (response.data) {
-        onSignup(response.data); // optional callback
-      
+        
+        
         toast.success("Signup successful!");
         navigate('/login');
       }

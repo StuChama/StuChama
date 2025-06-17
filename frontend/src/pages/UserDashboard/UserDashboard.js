@@ -86,7 +86,7 @@ const UserDashboard = () => {
     }
   };
 
-  console.log('Creating chama with user ID:', currentUser?.user_id);
+ 
   
   const handleCreateChama = async (chamaData) => {
     try {

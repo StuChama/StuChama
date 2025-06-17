@@ -1,4 +1,5 @@
-import React from 'react';
+import React  from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './ChamaCard.module.css';
 
 const ChamaCard = ({ chama }) => {
@@ -9,6 +10,12 @@ const ChamaCard = ({ chama }) => {
       .map(word => word[0])
       .join('')
       .toUpperCase();
+  };
+  const navigate = useNavigate();
+
+   const handleViewDetails = () => {
+    const role = chama.userRole.toLowerCase(); // make it lowercase to match route names
+    navigate(`/chama/${chama.id}/${role}`);
   };
 
   return (
@@ -21,7 +28,7 @@ const ChamaCard = ({ chama }) => {
         <span>Your Role: <strong>{chama.userRole}</strong></span>
         <span>Code: {chama.group_code}</span>
       </div>
-      <button className={styles.viewBtn}>View Details</button>
+      <button className={styles.viewBtn} onClick={handleViewDetails}>View Details</button>
     </div>
   );
 };

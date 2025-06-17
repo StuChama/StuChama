@@ -14,7 +14,10 @@ function AppWrapper() {
       <Route path="/signup" element={<SignupForm />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/dashboard" element={<UserDashboard />} />
-      <Route path="/MemberPage" element={<MemberPage />} /> 
+      <Route path="/MemberPage" element={<MemberPage />} />
+      <Route path="/chama/:chamaId/member" element={<MemberPage />} />
+      {/* <Route path="/chama/:id/treasurer" element={<TreasurerDashboard />} />
+<Route path="/chama/:id/chairperson" element={<ChairpersonDashboard />} /> */}
     </Routes>
   );
 }

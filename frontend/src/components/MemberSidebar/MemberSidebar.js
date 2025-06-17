@@ -1,5 +1,7 @@
-import React from 'react';
+// src/components/MemberSidebar/MemberSidebar.js
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
 import styles from './MemberSidebar.module.css';
 
 // Import icons from local assets
@@ -9,7 +11,8 @@ import groupProgressIcon from '../../assets/progress.png';
 import fineManagementIcon from '../../assets/fine (1).png';
 import logoutIcon from '../../assets/logout1.png';
 
-const MemberSidebar = ({ activeTab, setActiveTab, userName = "Mary Magdalene" }) => {
+const MemberSidebar = ({ activeTab, setActiveTab }) => {
+  const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleTabClick = (key) => {
@@ -31,7 +34,7 @@ const MemberSidebar = ({ activeTab, setActiveTab, userName = "Mary Magdalene" })
     <div className={styles.sidebar}>
       <div className={styles.profileSection}>
         <img src={profilePic} alt="Profile" className={styles.profileImage} />
-        <div className={styles.userName}>{userName}</div>
+        <div className={styles.userName}>{currentUser?.full_name || 'Member'}</div>
         <span className={styles.roleLabel}>Member</span>
       </div>
       <div className={styles.menuSection}>
