@@ -1,0 +1,21 @@
+/* src/components/BackButton/BackButton.module.css */
+
+.backButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: transparent;
+  border: 2px solid #910510;
+  color: #910510;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.backButton:hover {
+  background-color: #910510;
+  color: #fff;
+}

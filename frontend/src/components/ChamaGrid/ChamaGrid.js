@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ChamaCard from '../ChamaCard/ChamaCard';
 import styles from './ChamaGrid.module.css';
 
@@ -20,6 +21,10 @@ const ChamaGrid = ({ chamas }) => {
       )}
     </div>
   );
+};
+
+ChamaGrid.propTypes = {
+  chamas: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default ChamaGrid;

@@ -1,0 +1,77 @@
+.groupProgressContainer {
+  position: relative;
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.backButton {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #a00;
+  cursor: pointer;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.progressText {
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.progressBar {
+  background-color: #eee;
+  border-radius: 20px;
+  height: 20px;
+  margin: 0.5rem auto;
+  width: 60%;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: red;
+  border-radius: 20px 0 0 20px;
+}
+
+.cardsContainer {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background-color: #ffecb3;
+  padding: 1rem;
+  border-radius: 12px;
+  width: 300px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.contributeButton {
+  background-color: #cc0000;
+  color: white;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.contributeButton:hover {
+  background-color: #a30000;
+}

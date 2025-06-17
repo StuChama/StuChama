@@ -1,0 +1,24 @@
+.viewContainer {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  height: 100%;
+}
+
+.topBar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.backButton {
+  background-color: #ced6e0;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.backButton:hover {
+  background-color: #a4b0be;
+}

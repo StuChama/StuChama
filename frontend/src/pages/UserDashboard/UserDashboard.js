@@ -1,5 +1,5 @@
 import React, { useState, useEffect , useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import DashboardHeader from '../../components/DashboardHeader/DashboardHeader';
@@ -27,7 +27,6 @@ const UserDashboard = () => {
     const fetchUserChamas = async () => {
       try {
         setLoading(true);
-
         const groupsRes = await fetch('http://localhost:3001/groups');
         if (!groupsRes.ok) throw new Error('Failed to fetch groups');
         const groups = await groupsRes.json();
@@ -140,7 +139,7 @@ const UserDashboard = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: currentUser.id,
+          user_id: currentUser.user_id,
           group_id: chama.id,
           role: 'Member',
           joined_at: new Date().toISOString()
@@ -187,15 +186,19 @@ const UserDashboard = () => {
         <main className={styles.mainContent}>
           {activeTab === 'home' && (
             <>
-              {loading ? (
+              {loading && (
                 <div className={styles.loadingContainer}>
                   <p>Loading your chamas...</p>
                 </div>
-              ) : error ? (
+              )}
+
+              {!loading && error && (
                 <div className={styles.errorContainer}>
                   <p>Error: {error}</p>
                 </div>
-              ) : (
+              )}
+
+              {!loading && !error && (
                 <ChamaGrid chamas={chamas} />
               )}
             </>

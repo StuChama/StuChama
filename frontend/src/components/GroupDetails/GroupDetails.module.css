@@ -1,0 +1,63 @@
+.container {
+  position: relative;
+  padding: 2rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.backButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: transparent;
+  border: 2px solid #555;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.backButton:hover {
+  background-color: #eee;
+}
+
+.chamaName {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.infoBox {
+  background-color: #fff8dc;
+  border-left: 6px solid #ffd700;
+  padding: 1.2rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.infoBox h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: #870101;
+}
+
+.leaveContainer {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.leaveButton {
+  background-color:#910510;
+  color: white;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.leaveButton:hover {
+  background-color: #ff4d4f;
+}

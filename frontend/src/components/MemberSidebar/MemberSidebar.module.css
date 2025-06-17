@@ -1,0 +1,78 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 250px;
+  background-color: #c05c5c;
+}
+
+.profileSection {
+  text-align: center;
+  padding: 1rem;
+  background-color:#910510;
+}
+
+.profileImage {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+
+.userName {
+  display: block;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
+}
+
+.roleLabel {
+  display: block;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+
+.menuSection {
+  flex-grow: 1;
+  background-color: #870101;
+  padding: 1rem 0;
+}
+
+.sidebarMenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  color: #ffffff;
+  transition: background-color 0.2s ease;
+  border-radius: 20px;
+}
+
+.menuItem:hover {
+  background-color: #faf5e0;
+  color: #910510;
+}
+
+.active {
+  background-color: #faf5e0;
+  color: #910510;
+  font-weight: bold;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(110, 10, 10, 0.6);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+}
