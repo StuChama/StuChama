@@ -1,3 +1,5 @@
+// src/pages/UserDashboard/UserDashboard.js
+
 import React, { useState, useEffect , useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
@@ -19,7 +21,6 @@ const UserDashboard = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch user's chamas
   useEffect(() => {
     if (!currentUser) return;
 
@@ -65,14 +66,9 @@ const UserDashboard = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-
-    if (tab === 'create-chama') {
-      setShowCreateModal(true);
-    } else if (tab === 'join-chama') {
-      setShowJoinModal(true);
-    } else if (tab === 'logout') {
-      logout();
-    }
+    if (tab === 'create-chama') setShowCreateModal(true);
+    else if (tab === 'join-chama') setShowJoinModal(true);
+    else if (tab === 'logout') logout();
   };
 
   const getPageTitle = () => {
@@ -154,6 +150,8 @@ const UserDashboard = () => {
   const handleChamaClick = (chama) => {
     if (chama.userRole === 'Chairperson') {
       navigate(`/chama/${chama.id}/chairperson`);
+    } else if (chama.userRole === 'Treasurer') {
+      navigate(`/chama/${chama.id}/treasurer`);
     } else {
       navigate(`/chama/${chama.id}/member`);
     }
@@ -191,18 +189,8 @@ const UserDashboard = () => {
         <main className={styles.mainContent}>
           {activeTab === 'home' && (
             <>
-              {loading && (
-                <div className={styles.loadingContainer}>
-                  <p>Loading your chamas...</p>
-                </div>
-              )}
-
-              {!loading && error && (
-                <div className={styles.errorContainer}>
-                  <p>Error: {error}</p>
-                </div>
-              )}
-
+              {loading && <div className={styles.loadingContainer}><p>Loading your chamas...</p></div>}
+              {!loading && error && <div className={styles.errorContainer}><p>Error: {error}</p></div>}
               {!loading && !error && (
                 <ChamaGrid chamas={chamas} onChamaClick={handleChamaClick} />
               )}

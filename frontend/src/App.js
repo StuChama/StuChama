@@ -1,11 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import SignupForm from './components/SignUpForm/SignupForm';
 import LoginForm from './components/LoginForm/LoginForm';
 import HomePage from './pages/Homepage/HomePage';
 import UserDashboard from './pages/UserDashboard/UserDashboard';
 import MemberPage from './pages/MemberPage/MemberPage';
-import ChairpersonDashboard from './pages/ChairpersonDashboard/ChairpersonDashboard'; // Import the chairperson page
+import ChairpersonDashboard from './pages/ChairpersonDashboard/ChairpersonDashboard';
+import TreasurerDashboard from './pages/TreasurerDashboard/TreasurerDashboard'; // ✅ Add this import
+
 import { UserProvider } from './context/UserContext';
 
 function AppWrapper() {
@@ -17,6 +20,7 @@ function AppWrapper() {
       <Route path="/dashboard" element={<UserDashboard />} />
       <Route path="/chama/:chamaId/member" element={<MemberPage />} />
       <Route path="/chama/:chamaId/chairperson" element={<ChairpersonDashboard />} />
+      <Route path="/chama/:chamaId/treasurer" element={<TreasurerDashboard />} /> {/* ✅ Add this line */}
     </Routes>
   );
 }
