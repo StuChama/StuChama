@@ -1,0 +1,96 @@
+/* src/pages/ChairpersonDashboard/ChairpersonDashboard.module.css */
+
+.dashboardContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #fffaf3;
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+ background-color: #c05c5c;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid #ffd6ad;
+}
+
+/* Profile Section */
+.profileSection {
+  text-align: center;
+  margin-bottom: 30px;
+  background-color:#910510;
+}
+
+.profileImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #ffaa66;
+  margin-bottom: 10px;
+}
+
+.profileSection h3 {
+  margin: 5px 0;
+  font-size: 18px;
+}
+
+.profileSection p {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav button {
+  background-color: transparent;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+  color: #444;
+  transition: background-color 0.2s ease;
+}
+
+.nav button:hover {
+  background-color: #ffe0b3;
+}
+
+.active {
+  background-color: #ffd699;
+  color: #aa5500;
+  font-weight: bold;
+}
+
+.logoutButton {
+  margin-top: auto;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: #e60000;
+}
+
+/* Main Panel */
+.mainPanel {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}

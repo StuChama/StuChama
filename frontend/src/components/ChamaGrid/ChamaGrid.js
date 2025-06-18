@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 import ChamaCard from '../ChamaCard/ChamaCard';
 import styles from './ChamaGrid.module.css';
 
-const ChamaGrid = ({ chamas }) => {
+const ChamaGrid = ({ chamas, onChamaClick }) => {
   return (
     <div className={styles.chamaGrid}>
       {chamas.length > 0 ? (
-        chamas.map(chama => (
-          <ChamaCard 
+        chamas.map((chama) => (
+          <ChamaCard
             key={chama.group_id}
             chama={chama}
+            onClick={() => onChamaClick(chama)}
           />
         ))
       ) : (
@@ -24,7 +25,8 @@ const ChamaGrid = ({ chamas }) => {
 };
 
 ChamaGrid.propTypes = {
-  chamas: PropTypes.arrayOf(PropTypes.object).isRequired
+  chamas: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onChamaClick: PropTypes.func.isRequired,
 };
 
 export default ChamaGrid;
