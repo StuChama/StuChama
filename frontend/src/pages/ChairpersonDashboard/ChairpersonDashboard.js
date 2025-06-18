@@ -1,13 +1,20 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
-
-
 import GroupDetails from './ChairpersonGroupDetails';
 import Rules from './Rules';
 import GroupProgress from '../../components/GroupProgress/GroupProgress';
 import FineManagement from '../../components/FineManagement/FineManagement';
 import MyFines from '../../components/MyFines/MyFines';
+
+// Import icons
+import groupIcon from '../../assets/details (1).png';
+import progressIcon from '../../assets/roadmap (1).png';
+import fineIcon from '../../assets/fine (1).png';
+import myFinesIcon from '../../assets/fine (1).png';
+import rulesIcon from '../../assets/book (1).png';
+import logoutIcon from '../../assets/logout.png';
+import logoutIconHover from '../../assets/logout1.png';
 
 import styles from './ChairpersonDashboard.module.css';
 
@@ -16,6 +23,8 @@ const ChairpersonDashboard = () => {
   const { currentUser } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState('GroupDetails');
   const [group, setGroup] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
+  const [hoveredTab, setHoveredTab] = useState(null);
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -48,31 +57,110 @@ const ChairpersonDashboard = () => {
     }
   };
 
+  const menuItems = [
+    {
+      tab: 'GroupDetails',
+      label: 'Group Details',
+      icon: groupIcon,
+    },
+    {
+      tab: 'GroupProgress',
+      label: 'Group Progress',
+      icon: progressIcon,
+    },
+    {
+      tab: 'FineManagement',
+      label: 'Fine Management',
+      icon: fineIcon,
+    },
+    {
+      tab: 'MyFines',
+      label: 'My Fines',
+      icon: myFinesIcon,
+    },
+    {
+      tab: 'Rules',
+      label: 'Rules',
+      icon: rulesIcon,
+    },
+  ];
+
   return (
     <div className={styles.dashboardContainer}>
-      <aside className={styles.sidebar}>
-        <div className={styles.profileSection}>
-          <img
-            src={currentUser?.profile_picture || 'https://i.pravatar.cc/150?img=1'}
-            alt="Profile"
-            className={styles.profileImage}
-          />
-          <h3>{currentUser?.full_name}</h3>
-          <p>Chairperson</p>
+      <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
+        {/* User Profile */}
+        <div className={styles.userProfile}>
+          <div className={styles.profileImage}>
+            <img
+              src={currentUser?.profile_picture || 'https://i.pravatar.cc/150?img=1'}
+              alt="Profile"
+              className={styles.profileIcon}
+            />
+          </div>
+
+          {!collapsed && currentUser && (
+            <div className={styles.userInfo}>
+              <h3 className={styles.userName}>{currentUser.full_name}</h3>
+              <p className={styles.userRole}>Chairperson</p>
+            </div>
+          )}
         </div>
-        <nav className={styles.nav}>
-          <button onClick={() => setActiveTab('GroupDetails')} className={activeTab === 'GroupDetails' ? styles.active : ''}>Group Details</button>
-          <button onClick={() => setActiveTab('GroupProgress')} className={activeTab === 'GroupProgress' ? styles.active : ''}>Group Progress</button>
-          <button onClick={() => setActiveTab('FineManagement')} className={activeTab === 'FineManagement' ? styles.active : ''}>Fine Management</button>
-          <button onClick={() => setActiveTab('MyFines')} className={activeTab === 'MyFines' ? styles.active : ''}>My Fines</button>
-          <button onClick={() => setActiveTab('Rules')} className={activeTab === 'Rules' ? styles.active : ''}>Rules</button>
-          <button onClick={() => window.location.href = '/'} className={styles.logoutButton}>Log Out</button>
-        </nav>
+
+        {/* Collapse Button */}
+        <div className={styles.sidebarHeader}>
+          <button
+            className={styles.collapseBtn}
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            {collapsed ? '»' : '«'}
+          </button>
+        </div>
+
+        {/* Menu Items */}
+        <ul className={styles.sidebarMenu}>
+          {menuItems.map(({ tab, label, icon }) => (
+            <li
+              key={tab}
+              className={`${styles.menuItem} ${
+                activeTab === tab ? styles.active : ''
+              }`}
+              onClick={() => setActiveTab(tab)}
+              onMouseEnter={() => setHoveredTab(tab)}
+              onMouseLeave={() => setHoveredTab(null)}
+              title={label}
+            >
+              <img
+                src={icon}
+                alt={label}
+                className={styles.icon}
+              />
+              {!collapsed && <span className={styles.label}>{label}</span>}
+            </li>
+          ))}
+
+          {/* Logout */}
+          <li
+            className={styles.menuItem}
+            onClick={() => (window.location.href = '/')}
+            onMouseEnter={() => setHoveredTab('logout')}
+            onMouseLeave={() => setHoveredTab(null)}
+            title="Logout"
+          >
+            <img
+              src={hoveredTab === 'logout' ? logoutIconHover : logoutIcon}
+              alt="Logout"
+              className={styles.icon}
+            />
+            {!collapsed && <span className={styles.label}>Logout</span>}
+          </li>
+        </ul>
       </aside>
 
       <main className={styles.mainPanel}>
-        <h2>{group?.group_name}</h2>
-        {renderContent()}
+        <h2 className={styles.groupTitle}>{group?.group_name}</h2>
+        <div className={styles.contentWrapper}>
+          {renderContent()}
+        </div>
       </main>
     </div>
   );

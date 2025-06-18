@@ -1,6 +1,5 @@
 // src/pages/UserDashboard/UserDashboard.js
-
-import React, { useState, useEffect , useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -179,18 +178,25 @@ const UserDashboard = () => {
         setCollapsed={setCollapsed}
       />
 
-      <div className={styles.dashboardContent}>
+      <div className={`${styles.dashboardContent} ${collapsed ? styles.collapsed : ''}`}>
         <DashboardHeader
           title={getPageTitle()}
-          collapsed={collapsed}
           userName={currentUser.full_name}
         />
 
         <main className={styles.mainContent}>
           {activeTab === 'home' && (
             <>
-              {loading && <div className={styles.loadingContainer}><p>Loading your chamas...</p></div>}
-              {!loading && error && <div className={styles.errorContainer}><p>Error: {error}</p></div>}
+              {loading && (
+                <div className={styles.loadingContainer}>
+                  <p>Loading your chamas...</p>
+                </div>
+              )}
+              {!loading && error && (
+                <div className={styles.errorContainer}>
+                  <p>Error: {error}</p>
+                </div>
+              )}
               {!loading && !error && (
                 <ChamaGrid chamas={chamas} onChamaClick={handleChamaClick} />
               )}

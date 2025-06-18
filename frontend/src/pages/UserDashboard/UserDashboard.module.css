@@ -1,50 +1,41 @@
+/* src/pages/UserDashboard/UserDashboard.module.css */
 :root {
-  --sidebar-width: 260px;
-  --sidebar-collapsed-width: 70px;
   --primary-blue: #4a90e2;
   --primary-green: #2ecc71;
-  --light-bg: #f5f9ff; /* Light blue background */
-  --card-bg: #ffffff; /* White for cards */
-  --text-dark: #2c3e50; /* Dark text */
-  --text-light: #555; /* Light text */
-  --shadow: 0 5px 15px rgba(74, 144, 226, 0.15); /* Blue-tinted shadow */
+  --light-bg: #f5f9ff;
+  --card-bg: #ffffff;
+  --text-dark: #2c3e50;
+  --text-light: #555;
+  --shadow: 0 5px 15px rgba(74, 144, 226, 0.15);
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 70px;
 }
 
-/* DASHBOARD CONTAINER */
 .dashboardContainer {
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    #f5f9ff 0%,
-    #e8f4ff 100%
-  ); /* Light blue gradient */
+  background: var(--light-bg);
 }
 
-/* CONTENT SECTION */
 .dashboardContent {
   flex: 1;
   display: flex;
   flex-direction: column;
-  transition: padding-left 0.3s ease;
-  padding-left: var(--sidebar-width);
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.3s ease;
 }
 
-/* Adjust padding-left when sidebar is collapsed */
-.sidebar.collapsed ~ .dashboardContent {
-  padding-left: var(--sidebar-collapsed-width);
+.dashboardContent.collapsed {
+  margin-left: var(--sidebar-collapsed-width);
 }
 
-/* MAIN CONTENT */
 .mainContent {
   flex: 1;
-  padding: 25px;
-  background-color: transparent; /* Use the gradient background */
+  padding: 30px;
+  background-color: transparent;
   min-height: calc(100vh - 80px);
-  transition: padding-left 0.3s ease;
 }
 
-/* SETTINGS PANEL */
 .settingsPage {
   background: var(--card-bg);
   padding: 30px;
@@ -53,7 +44,6 @@
   border: 1px solid rgba(74, 144, 226, 0.1);
 }
 
-/* LOADING / ERROR BOXES */
 .loadingContainer,
 .errorContainer {
   display: flex;
@@ -66,9 +56,9 @@
   box-shadow: var(--shadow);
   border: 1px solid rgba(74, 144, 226, 0.1);
   color: var(--text-dark);
+  padding: 20px;
 }
 
-/* USER INFO IN PAGE CONTENT */
 .userInfo {
   display: flex;
   align-items: center;
@@ -99,7 +89,7 @@
   flex: 1;
 }
 
-.userDetails h2 {
+.userDetails h3 {
   color: var(--primary-blue);
   margin-bottom: 8px;
 }
@@ -107,58 +97,4 @@
 .userDetails p {
   color: var(--text-light);
   margin-bottom: 5px;
-}
-
-/* Additional elements to match theme */
-.sectionTitle {
-  color: var(--primary-blue);
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  position: relative;
-  padding-bottom: 10px;
-}
-
-.sectionTitle::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(
-    to right,
-    var(--primary-blue),
-    var(--primary-green)
-  );
-  border-radius: 2px;
-}
-
-.card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: var(--shadow);
-  margin-bottom: 25px;
-  border: 1px solid rgba(74, 144, 226, 0.1);
-}
-
-.btn-primary {
-  background: linear-gradient(
-    135deg,
-    var(--primary-blue),
-    var(--primary-green)
-  );
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 30px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(46, 204, 113, 0.25);
 }

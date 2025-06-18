@@ -1,3 +1,4 @@
+// src/components/ChamaGrid/ChamaGrid.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import ChamaCard from '../ChamaCard/ChamaCard';
@@ -9,7 +10,7 @@ const ChamaGrid = ({ chamas, onChamaClick }) => {
       {chamas.length > 0 ? (
         chamas.map((chama) => (
           <ChamaCard
-            key={chama.group_id}
+            key={chama.id}
             chama={chama}
             onClick={() => onChamaClick(chama)}
           />

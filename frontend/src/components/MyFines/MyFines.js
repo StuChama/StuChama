@@ -13,6 +13,7 @@ const MyFines = () => {
   const [showContribution, setShowContribution] = useState(false);
   const [selectedFine, setSelectedFine] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [totalFines, setTotalFines] = useState(0);
 
   const handleBack = () => {
     window.history.back();
@@ -29,6 +30,10 @@ const MyFines = () => {
           },
         });
         setFines(response.data);
+        
+        // Calculate total fines
+        const total = response.data.reduce((sum, fine) => sum + Number(fine.amount), 0);
+        setTotalFines(total);
       } catch (error) {
         console.error('Error fetching fines:', error);
       } finally {
@@ -47,8 +52,7 @@ const MyFines = () => {
   };
 
   const handlePayAll = () => {
-    const total = fines.reduce((sum, fine) => sum + Number(fine.amount), 0);
-    setSelectedFine({ id: 'all', amount: total });
+    setSelectedFine({ id: 'all', amount: totalFines });
     setShowContribution(true);
   };
 
@@ -64,20 +68,36 @@ const MyFines = () => {
       </div>
 
       <h3 className={styles.title}>MY FINES</h3>
+      
+      {totalFines > 0 && (
+        <div className={styles.totalFines}>
+          <span>Total Unpaid Fines:</span>
+          <span className={styles.totalAmount}>KES {totalFines.toLocaleString()}</span>
+        </div>
+      )}
 
       {loading ? (
-        <p>Loading fines...</p>
+        <div className={styles.loading}>Loading fines...</div>
       ) : fines.length === 0 ? (
-        <p>No unpaid fines 🎉</p>
+        <div className={styles.noFines}>
+          <div className={styles.celebrate}>🎉</div>
+          <p>No unpaid fines found!</p>
+        </div>
       ) : (
         <>
           <div className={styles.finesGrid}>
             {fines.map((fine) => (
               <div key={fine.id} className={styles.fineCard}>
-                <p><strong>Amount:</strong> KES {fine.amount}</p>
-                <p><strong>Reason:</strong> {fine.reason}</p>
+                <div className={styles.cardHeader}>
+                  <h4>Fine #{fine.id}</h4>
+                  <div className={styles.fineAmount}>KES {fine.amount}</div>
+                </div>
+                <div className={styles.cardBody}>
+                  <p><strong>Reason:</strong> {fine.reason}</p>
+                  <p><strong>Issued:</strong> {new Date(fine.created_at).toLocaleDateString()}</p>
+                </div>
                 <button className={styles.payButton} onClick={() => handlePay(fine)}>
-                  Pay
+                  Pay Fine
                 </button>
               </div>
             ))}
@@ -85,7 +105,7 @@ const MyFines = () => {
 
           <div className={styles.payAllContainer}>
             <button className={styles.payAllButton} onClick={handlePayAll}>
-              PAY ALL
+              PAY ALL FINES (KES {totalFines.toLocaleString()})
             </button>
           </div>
         </>

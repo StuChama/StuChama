@@ -1,10 +1,196 @@
+/* src/pages/MemberPage/MemberPage.module.css */
+:root {
+  --primary-blue: #4a90e2;
+  --secondary-green: #2ecc71;
+  --accent-red: #910510;
+  --dark-gray: #2c3e50;
+  --light-cream: #faf5e0;
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 70px;
+}
+
 .memberPageContainer {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f9ff 0%, #e8f4ff 100%);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .contentArea {
   flex: 1;
-  padding: 20px;
-  background-color: #f5f7fa;
+  padding: 35px;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.3s ease;
+  overflow-y: auto;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #4a90e2;
+}
+
+.error {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #e74c3c;
+}
+
+/* Sidebar Container */
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--primary-blue),
+    var(--secondary-green)
+  );
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  transition: width 0.3s ease;
+  z-index: 100;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+.collapsed ~ .contentArea {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+/* User Profile Section */
+.userProfile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 15px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.profileImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 2px solid white;
+}
+
+.profileIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.userInfo {
+  text-align: center;
+}
+
+.userName {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 5px 0 2px;
+  color: #fff;
+}
+
+.userRole {
+  font-size: 0.75rem;
+  color: #d1f2eb;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.collapsed .userInfo {
+  display: none;
+}
+
+.collapsed .userProfile {
+  padding: 20px 0;
+}
+
+/* Collapse Button */
+.collapseBtn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #ffffffcc;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Sidebar Menu */
+.sidebarMenu {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Menu Items */
+.menuItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  margin: 0 10px;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-weight: 500;
+}
+
+.menuItem:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+}
+
+/* Active Item — PILL STYLE */
+.active {
+  background-color: white;
+  color: var(--dark-gray);
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2);
+  border-radius: 30px;
+}
+
+/* Icons */
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+  filter: brightness(0) invert(1);
+  transition: margin 0.3s ease;
+}
+
+.active .icon {
+  filter: none;
+}
+
+.collapsed .menuItem {
+  justify-content: center;
+  padding: 12px 10px;
+}
+
+.collapsed .icon {
+  margin: 0;
+}
+
+.collapsed .label {
+  display: none;
 }

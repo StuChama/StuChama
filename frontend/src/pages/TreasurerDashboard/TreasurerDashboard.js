@@ -1,16 +1,21 @@
-// src/pages/TreasurerDashboard/TreasurerDashboard.js
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
-
 import GroupDetails from '../../components/GroupDetails/GroupDetails';
 import GroupProgress from '../../components/GroupProgress/GroupProgress';
 import MyFines from '../../components/MyFines/MyFines';
 import FineManagement from '../../components/FineManagement/FineManagement';
-
 import styles from './TreasurerDashboard.module.css';
 import { FaArrowLeft, FaSearch, FaDownload } from 'react-icons/fa';
+
+// Import icons
+import groupIcon from '../../assets/details (1).png';
+import progressIcon from '../../assets/roadmap (1).png';
+import reportIcon from '../../assets/payment-method.png';
+import fineIcon from '../../assets/fine (1).png';
+import myFinesIcon from '../../assets/fine (1).png';
+import logoutIcon from '../../assets/logout.png';
+import logoutIconHover from '../../assets/logout1.png';
 
 const TreasurerDashboard = () => {
   const { chamaId } = useParams();
@@ -19,6 +24,8 @@ const TreasurerDashboard = () => {
   const [group, setGroup] = useState(null);
   const [searchCode, setSearchCode] = useState('');
   const [transactions, setTransactions] = useState([]);
+  const [collapsed, setCollapsed] = useState(false);
+  const [hoveredTab, setHoveredTab] = useState(null);
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -49,6 +56,34 @@ const TreasurerDashboard = () => {
     txn.mpesa_code.toLowerCase().includes(searchCode.toLowerCase())
   );
 
+  const menuItems = [
+    {
+      tab: 'GroupDetails',
+      label: 'Group Details',
+      icon: groupIcon,
+    },
+    {
+      tab: 'GroupProgress',
+      label: 'Group Progress',
+      icon: progressIcon,
+    },
+    {
+      tab: 'TransactionReport',
+      label: 'Transaction Report',
+      icon: reportIcon,
+    },
+    {
+      tab: 'MyFines',
+      label: 'My Fines',
+      icon: myFinesIcon,
+    },
+    {
+      tab: 'FineManagement',
+      label: 'Fine Management',
+      icon: fineIcon,
+    },
+  ];
+
   const renderContent = () => {
     switch (activeTab) {
       case 'GroupDetails':
@@ -57,7 +92,7 @@ const TreasurerDashboard = () => {
         return <GroupProgress chamaId={chamaId} />;
       case 'TransactionReport':
         return (
-          <>
+          <div className={styles.transactionReport}>
             <div className={styles.searchSection}>
               <label htmlFor="search">SEARCH MPESA CODE</label>
               <div className={styles.searchInput}>
@@ -84,12 +119,12 @@ const TreasurerDashboard = () => {
                 <div key={txn.id} className={styles.transactionRow}>
                   <span>{txn.member_name}</span>
                   <span>{txn.mpesa_code}</span>
-                  <span>{txn.amount}</span>
-                  <span>✔️</span>
+                  <span>KES {txn.amount}</span>
+                  <span className={styles.verifyIcon}>✔️</span>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         );
       case 'MyFines':
         return <MyFines chamaId={chamaId} userId={currentUser?.id} />;
@@ -102,35 +137,90 @@ const TreasurerDashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <aside className={styles.sidebar}>
-        <div className={styles.profileSection}>
-          <img
-            src={currentUser?.profile_picture || 'https://i.pravatar.cc/150?img=2'}
-            alt="Profile"
-            className={styles.profileImage}
-          />
-          <h3>{currentUser?.full_name}</h3>
-          <p>Treasurer</p>
+      <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
+        {/* User Profile */}
+        <div className={styles.userProfile}>
+          <div className={styles.profileImage}>
+            <img
+              src={currentUser?.profile_picture || 'https://i.pravatar.cc/150?img=2'}
+              alt="Profile"
+              className={styles.profileIcon}
+            />
+          </div>
+
+          {!collapsed && currentUser && (
+            <div className={styles.userInfo}>
+              <h3 className={styles.userName}>{currentUser.full_name}</h3>
+              <p className={styles.userRole}>Treasurer</p>
+            </div>
+          )}
         </div>
-        <nav className={styles.nav}>
-          <button onClick={() => setActiveTab('GroupDetails')} className={activeTab === 'GroupDetails' ? styles.active : ''}>Group Details</button>
-          <button onClick={() => setActiveTab('GroupProgress')} className={activeTab === 'GroupProgress' ? styles.active : ''}>Group Progress</button>
-          <button onClick={() => setActiveTab('TransactionReport')} className={activeTab === 'TransactionReport' ? styles.active : ''}>Transaction Report</button>
-          <button onClick={() => setActiveTab('MyFines')} className={activeTab === 'MyFines' ? styles.active : ''}>My Fines</button>
-          <button onClick={() => setActiveTab('FineManagement')} className={activeTab === 'FineManagement' ? styles.active : ''}>Fine Management</button>
-          <button onClick={() => window.location.href = '/'} className={styles.logoutButton}>Log Out</button>
-        </nav>
+
+        {/* Collapse Button */}
+        <div className={styles.sidebarHeader}>
+          <button
+            className={styles.collapseBtn}
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            {collapsed ? '»' : '«'}
+          </button>
+        </div>
+
+        {/* Menu Items */}
+        <ul className={styles.sidebarMenu}>
+          {menuItems.map(({ tab, label, icon }) => (
+            <li
+              key={tab}
+              className={`${styles.menuItem} ${
+                activeTab === tab ? styles.active : ''
+              }`}
+              onClick={() => setActiveTab(tab)}
+              onMouseEnter={() => setHoveredTab(tab)}
+              onMouseLeave={() => setHoveredTab(null)}
+              title={label}
+            >
+              <img
+                src={icon}
+                alt={label}
+                className={styles.icon}
+              />
+              {!collapsed && <span className={styles.label}>{label}</span>}
+            </li>
+          ))}
+
+          {/* Logout */}
+          <li
+            className={styles.menuItem}
+            onClick={() => (window.location.href = '/')}
+            onMouseEnter={() => setHoveredTab('logout')}
+            onMouseLeave={() => setHoveredTab(null)}
+            title="Logout"
+          >
+            <img
+              src={hoveredTab === 'logout' ? logoutIconHover : logoutIcon}
+              alt="Logout"
+              className={styles.icon}
+            />
+            {!collapsed && <span className={styles.label}>Logout</span>}
+          </li>
+        </ul>
       </aside>
 
       <main className={styles.mainPanel}>
         <div className={styles.topBar}>
           <h2>{group?.group_name || 'CHAMA'}</h2>
           <div className={styles.topBarButtons}>
-            <button className={styles.iconButton}><FaArrowLeft /></button>
-            <button className={styles.iconButton}><FaDownload /> Download Report</button>
+            <button className={styles.iconButton} onClick={() => window.history.back()}>
+              <FaArrowLeft />
+            </button>
+            <button className={styles.downloadButton}>
+              <FaDownload /> Download Report
+            </button>
           </div>
         </div>
-        {renderContent()}
+        <div className={styles.contentWrapper}>
+          {renderContent()}
+        </div>
       </main>
     </div>
   );

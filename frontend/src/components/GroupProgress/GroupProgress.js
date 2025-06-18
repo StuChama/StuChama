@@ -52,62 +52,80 @@ const GroupProgress = () => {
     fetchData();
   }, [chamaId, currentUser]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!group) return <p>Group not found</p>;
+  if (loading) return <div className={styles.loading}>Loading progress data...</div>;
+  if (!group) return <div className={styles.error}>Group not found</div>;
 
   const totalGroupContribution = allContributions.reduce((sum, c) => sum + c.amount, 0);
-const progressPercent = goal ? Math.min(100, Math.round((totalGroupContribution / goal.target_amount) * 100)) : 0;
+  const progressPercent = goal ? Math.min(100, Math.round((totalGroupContribution / goal.target_amount) * 100)) : 0;
 
   return (
     <div className={styles.groupProgressContainer}>
       <BackButton />
 
       <div className={styles.header}>
-        <h2>{group.group_name}</h2>
-        <p>CHAMA GOAL PROGRESS</p>
+        <h2 className={styles.groupName}>{group.group_name}</h2>
+        <p className={styles.subtitle}>CHAMA GOAL PROGRESS</p>
+        
         {goal && (
-          <p className={styles.progressText}>
-            {totalGroupContribution.toLocaleString()} OUT OF {goal.target_amount.toLocaleString()}
-          </p>
+          <div className={styles.progressInfo}>
+            <div className={styles.amounts}>
+              <span className={styles.currentAmount}>KES {totalGroupContribution.toLocaleString()}</span>
+              <span className={styles.targetAmount}>/ KES {goal.target_amount.toLocaleString()}</span>
+            </div>
+            <div className={styles.progressBar}>
+              <div 
+                className={styles.progressFill} 
+                style={{ width: `${progressPercent}%` }}
+              >
+                <div className={styles.progressLabel}>{progressPercent}%</div>
+              </div>
+            </div>
+          </div>
         )}
-        <div className={styles.progressBar}>
-          <div className={styles.progressFill} style={{ width: `${progressPercent}%` }} />
-        </div>
       </div>
 
       <div className={styles.cardsContainer}>
         <div className={styles.card}>
           {goal && (
             <>
-              <h3>Deadline:</h3>
-              <p>{new Date(goal.deadline).toLocaleDateString()}</p>
-              <h3>Next Payment:</h3>
-              <p>–</p>
-              <h3>Amount to be paid:</h3>
-              <p>{(goal.target_amount / 10).toLocaleString()}</p>
+              <div className={styles.cardSection}>
+                <h3 className={styles.cardTitle}>Deadline</h3>
+                <p className={styles.cardValue}>{new Date(goal.deadline).toLocaleDateString()}</p>
+              </div>
+              
+              <div className={styles.cardSection}>
+                <h3 className={styles.cardTitle}>Next Payment</h3>
+                <p className={styles.cardValue}>–</p>
+              </div>
+              
+              <div className={styles.cardSection}>
+                <h3 className={styles.cardTitle}>Amount Due</h3>
+                <p className={styles.cardValue}>KES {(goal.target_amount / 10).toLocaleString()}</p>
+              </div>
             </>
           )}
         </div>
 
         <div className={styles.card}>
-          <h3>Payment History</h3>
+          <h3 className={styles.paymentTitle}>Payment History</h3>
           {contributions.length > 0 ? (
             <ul className={styles.historyList}>
               {contributions.map((c) => (
-                <li key={c.id}>
-                  {new Date(c.contributed_at).toLocaleDateString()} – KES {c.amount.toLocaleString()}
+                <li key={c.id} className={styles.historyItem}>
+                  <span className={styles.historyDate}>{new Date(c.contributed_at).toLocaleDateString()}</span>
+                  <span className={styles.historyAmount}>KES {c.amount.toLocaleString()}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>No records available</p>
+            <p className={styles.noRecords}>No payment records available</p>
           )}
         </div>
       </div>
 
       <div className={styles.buttonContainer}>
         <button className={styles.contributeButton} onClick={() => setShowContribution(true)}>
-          Contribute
+          Contribute to Goal
         </button>
       </div>
 

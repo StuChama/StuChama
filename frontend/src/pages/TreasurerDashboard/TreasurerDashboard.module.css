@@ -1,177 +1,361 @@
 /* TreasurerDashboard.module.css */
+:root {
+  --primary-blue: #4a90e2;
+  --secondary-green: #2ecc71;
+  --accent-red: #e74c3c;
+  --dark-gray: #2c3e50;
+  --light-bg: #f5f9ff;
+  --card-bg: #ffffff;
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 70px;
+}
 
 .dashboardContainer {
   display: flex;
-  height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--light-bg) 0%, #e8f4ff 100%);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Sidebar Container */
 .sidebar {
-  width: 250px;
-  background-color: #8B0000; /* Deep red */
-  color: white;
-  padding: 20px;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--primary-blue),
+    var(--secondary-green)
+  );
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  transition: width 0.3s ease;
+  z-index: 100;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+/* User Profile Section */
+.userProfile {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-}
-
-.profileSection {
-  text-align: center;
-  margin-bottom: 30px;
+  align-items: center;
+  padding: 25px 15px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
 }
 
 .profileImage {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  object-fit: cover;
+  overflow: hidden;
   margin-bottom: 10px;
   border: 2px solid white;
 }
 
-.nav {
-  flex: 1;
+.profileIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.userInfo {
+  text-align: center;
+}
+
+.userName {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 5px 0 2px;
+  color: #fff;
+}
+
+.userRole {
+  font-size: 0.75rem;
+  color: #d1f2eb;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.collapsed .userInfo {
+  display: none;
+}
+
+.collapsed .userProfile {
+  padding: 20px 0;
+}
+
+/* Collapse Button */
+.collapseBtn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #ffffffcc;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Sidebar Menu */
+.sidebarMenu {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.nav button {
-  background: none;
-  border: none;
+/* Menu Items */
+.menuItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  margin: 0 10px;
+  border-radius: 30px;
   color: white;
-  text-align: left;
-  padding: 10px;
-  font-size: 16px;
   cursor: pointer;
-  border-radius: 10px;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  position: relative;
+  font-weight: 500;
 }
 
-.nav button:hover,
-.nav .active {
+.menuItem:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+}
+
+/* Active Item — PILL STYLE */
+.active {
   background-color: white;
-  color: #8B0000;
+  color: var(--dark-gray);
   font-weight: bold;
+  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2);
+  border-radius: 30px;
 }
 
-.logoutButton {
-  background-color: #ff4d4d;
-  border: none;
-  color: white;
-  padding: 10px;
-  border-radius: 10px;
-  cursor: pointer;
-  margin-top: 20px;
+/* Icons */
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+  filter: brightness(0) invert(1);
+  transition: margin 0.3s ease;
 }
 
-.logoutButton:hover {
-  background-color: #e60000;
+.active .icon {
+  filter: none;
 }
 
+.collapsed .menuItem {
+  justify-content: center;
+  padding: 12px 10px;
+}
+
+.collapsed .icon {
+  margin: 0;
+}
+
+.collapsed .label {
+  display: none;
+}
+
+/* Main Panel */
 .mainPanel {
   flex: 1;
-  background-color: #fff8dc;
-  padding: 20px;
+  padding: 35px;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.3s ease;
   overflow-y: auto;
 }
 
-.headerBar {
+.collapsed ~ .mainPanel {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+.contentWrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(74, 144, 226, 0.15);
+  border: 1px solid rgba(74, 144, 226, 0.1);
+  margin-top: 20px;
+}
+
+.topBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(74, 144, 226, 0.1);
 }
 
-.headerBar h2 {
-  font-size: 24px;
-  color: #8B0000;
+.topBar h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin: 0;
+  position: relative;
+  padding-bottom: 10px;
 }
 
-.backButton {
-  background: none;
+.topBar h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to right, #4a90e2, #2ecc71);
+  border-radius: 2px;
+}
+
+.topBarButtons {
+  display: flex;
+  gap: 15px;
+}
+
+.iconButton {
+  background: linear-gradient(135deg, #4a90e2, #2ecc71);
+  color: white;
   border: none;
-  font-size: 18px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  color: #8B0000;
+  transition: all 0.3s ease;
+}
+
+.iconButton:hover {
+  opacity: 0.9;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(74, 144, 226, 0.25);
 }
 
 .downloadButton {
-  background-color: #ffd700;
+  background: linear-gradient(135deg, #4a90e2, #2ecc71);
+  color: white;
   border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: bold;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  box-shadow: 0 4px 10px rgba(74, 144, 226, 0.25);
 }
 
 .downloadButton:hover {
-  background-color: #e6c200;
+  opacity: 0.9;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(46, 204, 113, 0.35);
+}
+
+/* Transaction Report */
+.transactionReport {
+  margin-top: 20px;
 }
 
 .searchSection {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .searchSection label {
-  font-weight: bold;
-  color: #8B0000;
   display: block;
-  margin-bottom: 5px;
+  font-weight: 600;
+  color: #4a90e2;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
 }
 
-.searchBar {
-  display: flex;
-  align-items: center;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 5px 10px;
-  gap: 8px;
+.searchInput {
+  position: relative;
+  max-width: 400px;
 }
 
-.searchBar input {
-  border: none;
+.searchIcon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4a90e2;
+}
+
+.searchInput input {
+  width: 100%;
+  padding: 12px 20px 12px 45px;
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 30px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.searchInput input:focus {
   outline: none;
-  flex: 1;
-  padding: 8px;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
 }
 
-.searchConfirmation {
-  margin-top: 5px;
-  color: #8B0000;
-  font-style: italic;
+.searchSection p {
+  margin-top: 10px;
+  color: #555;
+}
+
+.searchSection strong {
+  color: #4a90e2;
 }
 
 .transactionTable {
-  background-color: #fffacd;
-  padding: 15px;
-  border-radius: 10px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.transactionTable table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+.transactionHeader {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1fr;
+  background: linear-gradient(135deg, #4a90e2, #2ecc71);
+  color: white;
+  font-weight: 600;
+  padding: 15px 20px;
 }
 
-.transactionTable th,
-.transactionTable td {
-  text-align: left;
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
-  color: #000;
+.transactionRow {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1fr;
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+  transition: background-color 0.2s;
 }
 
-.transactionTable th {
-  background-color: #ffe066;
+.transactionRow:last-child {
+  border-bottom: none;
+}
+
+.transactionRow:hover {
+  background-color: rgba(74, 144, 226, 0.05);
+}
+
+.transactionRow span {
+  color: #555;
 }
 
 .verifyIcon {
-  color: green;
-  font-size: 18px;
+  color: #2ecc71;
+  font-weight: bold;
 }
