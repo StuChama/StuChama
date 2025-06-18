@@ -55,64 +55,371 @@
     }
   ],
   "group_members": [
-    { "id": "1", "user_id": 1, "group_id": 1, "role": "Chairperson", "joined_at": "2025-06-01T10:05:00Z" },
-    { "id": "2", "user_id": 2, "group_id": 1, "role": "Treasurer", "joined_at": "2025-06-01T10:06:00Z" },
-    { "id": "3", "user_id": 3, "group_id": 1, "role": "Member", "joined_at": "2025-06-01T10:07:00Z" },
-    { "id": "4", "user_id": 2, "group_id": "0947", "role": "Chairperson", "joined_at": "2025-06-15T15:13:06.413Z" },
-    { "id": "5", "user_id": 1, "group_id": "0947", "role": "Treasurer", "joined_at": "2025-06-15T15:14:00.000Z" },
-    { "id": "6", "user_id": 3, "group_id": "0947", "role": "Member", "joined_at": "2025-06-15T15:15:00.000Z" },
-    { "id": "7", "user_id": 1, "group_id": "17b9", "role": "Chairperson", "joined_at": "2025-06-16T07:57:13.436Z" },
-    { "id": "8", "user_id": 2, "group_id": "17b9", "role": "Member", "joined_at": "2025-06-16T07:58:00.000Z" },
-    { "id": "9", "user_id": 3, "group_id": "17b9", "role": "Treasurer", "joined_at": "2025-06-16T07:59:00.000Z" }
+    {
+      "id": "1",
+      "user_id": 1,
+      "group_id": 1,
+      "role": "Chairperson",
+      "joined_at": "2025-06-01T10:05:00Z"
+    },
+    {
+      "id": "2",
+      "user_id": 2,
+      "group_id": 1,
+      "role": "Treasurer",
+      "joined_at": "2025-06-01T10:06:00Z"
+    },
+    {
+      "id": "3",
+      "user_id": 3,
+      "group_id": 1,
+      "role": "Member",
+      "joined_at": "2025-06-01T10:07:00Z"
+    },
+    {
+      "id": "4",
+      "user_id": 2,
+      "group_id": "0947",
+      "role": "Chairperson",
+      "joined_at": "2025-06-15T15:13:06.413Z"
+    },
+    {
+      "id": "5",
+      "user_id": 1,
+      "group_id": "0947",
+      "role": "Treasurer",
+      "joined_at": "2025-06-15T15:14:00.000Z"
+    },
+    {
+      "id": "6",
+      "user_id": 3,
+      "group_id": "0947",
+      "role": "Member",
+      "joined_at": "2025-06-15T15:15:00.000Z"
+    },
+    {
+      "id": "7",
+      "user_id": 1,
+      "group_id": "17b9",
+      "role": "Chairperson",
+      "joined_at": "2025-06-16T07:57:13.436Z"
+    },
+    {
+      "id": "8",
+      "user_id": 2,
+      "group_id": "17b9",
+      "role": "Member",
+      "joined_at": "2025-06-16T07:58:00.000Z"
+    },
+    {
+      "id": "9",
+      "user_id": 3,
+      "group_id": "17b9",
+      "role": "Treasurer",
+      "joined_at": "2025-06-16T07:59:00.000Z"
+    },
+    {
+      "id": "5ced",
+      "user_id": 4,
+      "group_id": "0947",
+      "role": "Member",
+      "joined_at": "2025-06-18T09:47:32.263Z"
+    }
   ],
   "goals": [
-    { "id": "1", "group_id": 1, "goal_name": "Buy Laptop", "target_amount": 90000, "deadline": "2025-07-30", "created_at": "2025-06-01T11:00:00Z" },
-    { "id": "2", "group_id": "0947", "goal_name": "Team Retreat", "target_amount": 30000, "deadline": "2025-08-15", "created_at": "2025-06-15T16:00:00Z" },
-    { "id": "3", "group_id": "17b9", "goal_name": "Buy Vinyl Equipment", "target_amount": 50000, "deadline": "2025-08-30", "created_at": "2025-06-16T08:00:00Z" }
+    {
+      "id": "1",
+      "group_id": 1,
+      "goal_name": "Buy Laptop",
+      "target_amount": 90000,
+      "deadline": "2025-07-30",
+      "created_at": "2025-06-01T11:00:00Z"
+    },
+    {
+      "id": "2",
+      "group_id": "0947",
+      "goal_name": "Team Retreat",
+      "target_amount": 30000,
+      "deadline": "2025-08-15",
+      "created_at": "2025-06-15T16:00:00Z"
+    },
+    {
+      "id": "3",
+      "group_id": "17b9",
+      "goal_name": "Buy Vinyl Equipment",
+      "target_amount": 50000,
+      "deadline": "2025-08-30",
+      "created_at": "2025-06-16T08:00:00Z"
+    }
   ],
   "contributions": [
-    { "id": "1", "goal_id": 1, "user_id": 3, "amount": 1500, "contributed_at": "2025-06-01T12:00:00Z" },
-    { "id": "4", "goal_id": 2, "user_id": 3, "amount": 2000, "contributed_at": "2025-06-05T12:00:00Z" },
-    { "id": "5", "goal_id": 3, "user_id": 3, "amount": 2500, "contributed_at": "2025-06-10T12:00:00Z" },
-    { "id": "2", "goal_id": 2, "user_id": 1, "amount": 2000, "contributed_at": "2025-06-15T17:00:00Z" },
-    { "id": "6", "goal_id": 3, "user_id": 1, "amount": 3000, "contributed_at": "2025-06-18T10:00:00Z" },
-    { "id": "8", "goal_id": 1, "user_id": 1, "amount": 1500, "contributed_at": "2025-06-20T09:00:00Z" },
-    { "id": "3", "goal_id": 3, "user_id": 2, "amount": 3000, "contributed_at": "2025-06-16T09:00:00Z" },
-    { "id": "7", "goal_id": 1, "user_id": 2, "amount": 1500, "contributed_at": "2025-06-19T14:00:00Z" },
-    { "id": "9", "goal_id": 2, "user_id": 2, "amount": 1200, "contributed_at": "2025-06-21T08:00:00Z" }
+    {
+      "id": "1",
+      "goal_id": 1,
+      "user_id": 3,
+      "amount": 1500,
+      "contributed_at": "2025-06-01T12:00:00Z"
+    },
+    {
+      "id": "4",
+      "goal_id": 2,
+      "user_id": 3,
+      "amount": 2000,
+      "contributed_at": "2025-06-05T12:00:00Z"
+    },
+    {
+      "id": "5",
+      "goal_id": 3,
+      "user_id": 3,
+      "amount": 2500,
+      "contributed_at": "2025-06-10T12:00:00Z"
+    },
+    {
+      "id": "2",
+      "goal_id": 2,
+      "user_id": 1,
+      "amount": 2000,
+      "contributed_at": "2025-06-15T17:00:00Z"
+    },
+    {
+      "id": "6",
+      "goal_id": 3,
+      "user_id": 1,
+      "amount": 3000,
+      "contributed_at": "2025-06-18T10:00:00Z"
+    },
+    {
+      "id": "8",
+      "goal_id": 1,
+      "user_id": 1,
+      "amount": 1500,
+      "contributed_at": "2025-06-20T09:00:00Z"
+    },
+    {
+      "id": "3",
+      "goal_id": 3,
+      "user_id": 2,
+      "amount": 3000,
+      "contributed_at": "2025-06-16T09:00:00Z"
+    },
+    {
+      "id": "7",
+      "goal_id": 1,
+      "user_id": 2,
+      "amount": 1500,
+      "contributed_at": "2025-06-19T14:00:00Z"
+    },
+    {
+      "id": "9",
+      "goal_id": 2,
+      "user_id": 2,
+      "amount": 1200,
+      "contributed_at": "2025-06-21T08:00:00Z"
+    }
   ],
   "transactions": [
-    { "id": "1", "user_id": 3, "group_id": 1, "mpesa_code": "MPESA12345", "amount": 1500, "status": "Success", "transaction_date": "2025-06-01T12:01:00Z" },
-    { "id": "4", "user_id": 3, "group_id": "0947", "mpesa_code": "MPESA11111", "amount": 2000, "status": "Success", "transaction_date": "2025-06-05T12:01:00Z" },
-    { "id": "5", "user_id": 3, "group_id": "17b9", "mpesa_code": "MPESA22222", "amount": 2500, "status": "Success", "transaction_date": "2025-06-10T12:01:00Z" },
-    { "id": "2", "user_id": 1, "group_id": "0947", "mpesa_code": "MPESA67890", "amount": 2000, "status": "Success", "transaction_date": "2025-06-15T17:01:00Z" },
-    { "id": "6", "user_id": 1, "group_id": "17b9", "mpesa_code": "MPESA77777", "amount": 3000, "status": "Success", "transaction_date": "2025-06-18T10:01:00Z" },
-    { "id": "10", "user_id": 1, "group_id": 1, "mpesa_code": "MPESA10000", "amount": 1500, "status": "Success", "transaction_date": "2025-06-20T09:01:00Z" },
-    { "id": "3", "user_id": 2, "group_id": "17b9", "mpesa_code": "MPESA33333", "amount": 3000, "status": "Success", "transaction_date": "2025-06-16T09:01:00Z" },
-    { "id": "7", "user_id": 2, "group_id": 1, "mpesa_code": "MPESA88888", "amount": 1500, "status": "Success", "transaction_date": "2025-06-19T14:01:00Z" },
-    { "id": "11", "user_id": 2, "group_id": "0947", "mpesa_code": "MPESA99999", "amount": 1200, "status": "Success", "transaction_date": "2025-06-21T08:01:00Z" }
+    {
+      "id": "1",
+      "user_id": 3,
+      "group_id": 1,
+      "mpesa_code": "MPESA12345",
+      "amount": 1500,
+      "status": "Success",
+      "transaction_date": "2025-06-01T12:01:00Z"
+    },
+    {
+      "id": "4",
+      "user_id": 3,
+      "group_id": "0947",
+      "mpesa_code": "MPESA11111",
+      "amount": 2000,
+      "status": "Success",
+      "transaction_date": "2025-06-05T12:01:00Z"
+    },
+    {
+      "id": "5",
+      "user_id": 3,
+      "group_id": "17b9",
+      "mpesa_code": "MPESA22222",
+      "amount": 2500,
+      "status": "Success",
+      "transaction_date": "2025-06-10T12:01:00Z"
+    },
+    {
+      "id": "2",
+      "user_id": 1,
+      "group_id": "0947",
+      "mpesa_code": "MPESA67890",
+      "amount": 2000,
+      "status": "Success",
+      "transaction_date": "2025-06-15T17:01:00Z"
+    },
+    {
+      "id": "6",
+      "user_id": 1,
+      "group_id": "17b9",
+      "mpesa_code": "MPESA77777",
+      "amount": 3000,
+      "status": "Success",
+      "transaction_date": "2025-06-18T10:01:00Z"
+    },
+    {
+      "id": "10",
+      "user_id": 1,
+      "group_id": 1,
+      "mpesa_code": "MPESA10000",
+      "amount": 1500,
+      "status": "Success",
+      "transaction_date": "2025-06-20T09:01:00Z"
+    },
+    {
+      "id": "3",
+      "user_id": 2,
+      "group_id": "17b9",
+      "mpesa_code": "MPESA33333",
+      "amount": 3000,
+      "status": "Success",
+      "transaction_date": "2025-06-16T09:01:00Z"
+    },
+    {
+      "id": "7",
+      "user_id": 2,
+      "group_id": 1,
+      "mpesa_code": "MPESA88888",
+      "amount": 1500,
+      "status": "Success",
+      "transaction_date": "2025-06-19T14:01:00Z"
+    },
+    {
+      "id": "11",
+      "user_id": 2,
+      "group_id": "0947",
+      "mpesa_code": "MPESA99999",
+      "amount": 1200,
+      "status": "Success",
+      "transaction_date": "2025-06-21T08:01:00Z"
+    }
   ],
   "fines": [
-    { "id": "1", "user_id": 3, "group_id": 1, "amount": 100, "reason": "Late contribution", "status": "Unpaid" },
-    { "id": "4", "user_id": 3, "group_id": "0947", "amount": 50, "reason": "Missed meeting", "status": "Unpaid" },
-    { "id": "2", "user_id": 1, "group_id": "0947", "amount": 50, "reason": "Missed meeting", "status": "Paid" },
-    { "id": "5", "user_id": 1, "group_id": 1, "amount": 70, "reason": "Late login", "status": "Unpaid" },
-    { "id": "3", "user_id": 2, "group_id": "17b9", "amount": 75, "reason": "Missed deadline", "status": "Unpaid" },
-    { "id": "6", "user_id": 2, "group_id": 1, "amount": 30, "reason": "Disrespect during meeting", "status": "Paid" }
+    {
+      "id": "1",
+      "user_id": 3,
+      "group_id": 1,
+      "amount": 100,
+      "reason": "Late contribution",
+      "status": "Unpaid"
+    },
+    {
+      "id": "4",
+      "user_id": 3,
+      "group_id": "0947",
+      "amount": 50,
+      "reason": "Missed meeting",
+      "status": "Unpaid"
+    },
+    {
+      "id": "2",
+      "user_id": 1,
+      "group_id": "0947",
+      "amount": 50,
+      "reason": "Missed meeting",
+      "status": "Paid"
+    },
+    {
+      "id": "5",
+      "user_id": 1,
+      "group_id": 1,
+      "amount": 70,
+      "reason": "Late login",
+      "status": "Unpaid"
+    },
+    {
+      "id": "3",
+      "user_id": 2,
+      "group_id": "17b9",
+      "amount": 75,
+      "reason": "Missed deadline",
+      "status": "Unpaid"
+    },
+    {
+      "id": "6",
+      "user_id": 2,
+      "group_id": 1,
+      "amount": 30,
+      "reason": "Disrespect during meeting",
+      "status": "Paid"
+    }
   ],
   "meeting_notes": [
-    { "id": "1", "group_id": 1, "uploaded_by": 2, "title": "June Planning", "file_url": "https://example.com/notes/june.pdf", "uploaded_at": "2025-06-02T10:00:00Z" },
-    { "id": "2", "group_id": "0947", "uploaded_by": 1, "title": "Retreat Discussion", "file_url": "https://example.com/notes/retreat.pdf", "uploaded_at": "2025-06-16T10:00:00Z" },
-    { "id": "3", "group_id": "17b9", "uploaded_by": 3, "title": "Equipment Planning", "file_url": "https://example.com/notes/equipment.pdf", "uploaded_at": "2025-06-17T10:00:00Z" }
+    {
+      "id": "1",
+      "group_id": 1,
+      "uploaded_by": 2,
+      "title": "June Planning",
+      "file_url": "https://example.com/notes/june.pdf",
+      "uploaded_at": "2025-06-02T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "group_id": "0947",
+      "uploaded_by": 1,
+      "title": "Retreat Discussion",
+      "file_url": "https://example.com/notes/retreat.pdf",
+      "uploaded_at": "2025-06-16T10:00:00Z"
+    },
+    {
+      "id": "3",
+      "group_id": "17b9",
+      "uploaded_by": 3,
+      "title": "Equipment Planning",
+      "file_url": "https://example.com/notes/equipment.pdf",
+      "uploaded_at": "2025-06-17T10:00:00Z"
+    }
   ],
   "notifications": [
-    { "id": "1", "user_id": 3, "message": "You have a new fine for missing the deadline.", "status": "Unread", "created_at": "2025-06-02T12:00:00Z" },
-    { "id": "2", "user_id": 1, "message": "Meeting scheduled for Friday.", "status": "Read", "created_at": "2025-06-15T12:00:00Z" },
-    { "id": "3", "user_id": 2, "message": "Contribution deadline approaching.", "status": "Unread", "created_at": "2025-06-16T12:00:00Z" }
+    {
+      "id": "1",
+      "user_id": 3,
+      "message": "You have a new fine for missing the deadline.",
+      "status": "Unread",
+      "created_at": "2025-06-02T12:00:00Z"
+    },
+    {
+      "id": "2",
+      "user_id": 1,
+      "message": "Meeting scheduled for Friday.",
+      "status": "Read",
+      "created_at": "2025-06-15T12:00:00Z"
+    },
+    {
+      "id": "3",
+      "user_id": 2,
+      "message": "Contribution deadline approaching.",
+      "status": "Unread",
+      "created_at": "2025-06-16T12:00:00Z"
+    }
   ],
   "rules": [
-    { "id": "1", "group_id": 1, "created_by": 1, "rule_description": "All contributions must be made by the 30th of every month.", "created_at": "2025-06-01T14:00:00Z" },
-    { "id": "2", "group_id": "0947", "created_by": 2, "rule_description": "Meeting attendance is mandatory.", "created_at": "2025-06-15T14:00:00Z" },
-    { "id": "3", "group_id": "17b9", "created_by": 1, "rule_description": "Late fines will be applied after 3 days.", "created_at": "2025-06-16T14:00:00Z" }
+    {
+      "id": "1",
+      "group_id": 1,
+      "created_by": 1,
+      "rule_description": "All contributions must be made by the 30th of every month.",
+      "created_at": "2025-06-01T14:00:00Z"
+    },
+    {
+      "id": "2",
+      "group_id": "0947",
+      "created_by": 2,
+      "rule_description": "Meeting attendance is mandatory.",
+      "created_at": "2025-06-15T14:00:00Z"
+    },
+    {
+      "id": "3",
+      "group_id": "17b9",
+      "created_by": 1,
+      "rule_description": "Late fines will be applied after 3 days.",
+      "created_at": "2025-06-16T14:00:00Z"
+    }
   ]
 }

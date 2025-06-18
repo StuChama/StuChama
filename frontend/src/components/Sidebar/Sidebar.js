@@ -6,13 +6,13 @@ import { UserContext } from '../../context/UserContext';
 import homeIcon from '../../assets/black home icon.png';
 import homeIconHover from '../../assets/black home icon.png';
 
-import settingsIcon from '../../assets/setting.png';
+import settingsIcon from '../../assets/setting (1).png';
 import settingsIconHover from '../../assets/setting (1).png';
 
-import createChamaIcon from '../../assets/add (1).png';
+import createChamaIcon from '../../assets/add.png';
 import createChamaIconHover from '../../assets/add.png';
 
-import joinChamaIcon from '../../assets/user (1).png';
+import joinChamaIcon from '../../assets/user.png';
 import joinChamaIconHover from '../../assets/user.png';
 
 import logoutIcon from '../../assets/logout.png';
