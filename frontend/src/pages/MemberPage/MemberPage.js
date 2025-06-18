@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import Sidebar from '../../components/MemberSidebar/MemberSidebar';
 import GroupDetails from '../../components/GroupDetails/GroupDetails';
 import GroupProgress from '../../components/GroupProgress/GroupProgress';
-import FineManagement from '../../components/FineManagement/FineManagement';
+import MyFines from '../../components/MyFines/MyFines';
 import styles from './MemberPage.module.css';
 
 const MemberPage = () => {
@@ -39,8 +39,8 @@ const MemberPage = () => {
         return <GroupDetails chama={chamaData} />;
       case 'groupProgress':
         return <GroupProgress chama={chamaData} />;
-      case 'fineManagement':
-        return <FineManagement chama={chamaData} />;
+      case 'MyFines':
+        return <MyFines chama={chamaData} />;
       default:
         return <GroupDetails chama={chamaData} />;
     }

@@ -1,17 +1,19 @@
-// src/components/MemberSidebar/MemberSidebar.js
+// src/components/ChairpersonSidebar/ChairpersonSidebar.js
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
-import styles from './MemberSidebar.module.css';
+import styles from './ChairpersonSidebar.module.css';
 
 // Import icons from local assets
 import profilePic from '../../assets/user.png';
 import groupDetailsIcon from '../../assets/details (1).png';
 import groupProgressIcon from '../../assets/progress.png';
-import MyFinesIcon from '../../assets/fine (1).png';
+import myFinesIcon from '../../assets/fine (1).png';
+import fineManagementIcon from '../../assets/fine.png'; // Add a relevant icon
+import rulesIcon from '../../assets/image.png'; // Add a relevant icon
 import logoutIcon from '../../assets/logout1.png';
 
-const MemberSidebar = ({ activeTab, setActiveTab }) => {
+const ChairpersonSidebar = ({ activeTab, setActiveTab }) => {
   const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -26,7 +28,9 @@ const MemberSidebar = ({ activeTab, setActiveTab }) => {
   const menuItems = [
     { key: 'groupDetails', label: 'Group Details', icon: groupDetailsIcon },
     { key: 'groupProgress', label: 'Group Progress', icon: groupProgressIcon },
-    { key: 'MyFines', label: 'Fine Management', icon: MyFinesIcon },
+    { key: 'myFines', label: 'My Fines', icon: myFinesIcon },
+    { key: 'fineManagement', label: 'Fine Management', icon: fineManagementIcon },
+    { key: 'rules', label: 'Rules', icon: rulesIcon },
     { key: 'logout', label: 'Log Out', icon: logoutIcon },
   ];
 
@@ -34,8 +38,8 @@ const MemberSidebar = ({ activeTab, setActiveTab }) => {
     <div className={styles.sidebar}>
       <div className={styles.profileSection}>
         <img src={profilePic} alt="Profile" className={styles.profileImage} />
-        <div className={styles.userName}>{currentUser?.full_name || 'Member'}</div>
-        <span className={styles.roleLabel}>Member</span>
+        <div className={styles.userName}>{currentUser?.full_name || 'Chairperson'}</div>
+        <span className={styles.roleLabel}>Chairperson</span>
       </div>
       <div className={styles.menuSection}>
         <ul className={styles.sidebarMenu}>
@@ -55,4 +59,4 @@ const MemberSidebar = ({ activeTab, setActiveTab }) => {
   );
 };
 
-export default MemberSidebar;
+export default ChairpersonSidebar;

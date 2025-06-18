@@ -22,7 +22,6 @@ const UserDashboard = () => {
   // Fetch user's chamas
   useEffect(() => {
     if (!currentUser) return;
-    console.log('Current user:', currentUser);
 
     const fetchUserChamas = async () => {
       try {
@@ -67,17 +66,17 @@ const UserDashboard = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
 
-    if(tab === 'create-chama') {
+    if (tab === 'create-chama') {
       setShowCreateModal(true);
-    } else if(tab === 'join-chama') {
+    } else if (tab === 'join-chama') {
       setShowJoinModal(true);
-    } else if(tab === 'logout') {
+    } else if (tab === 'logout') {
       logout();
     }
   };
 
   const getPageTitle = () => {
-    switch(activeTab) {
+    switch (activeTab) {
       case 'home': return 'Dashboard';
       case 'settings': return 'Settings';
       case 'create-chama': return 'Create New Chama';
@@ -86,8 +85,6 @@ const UserDashboard = () => {
     }
   };
 
- 
-  
   const handleCreateChama = async (chamaData) => {
     try {
       const res = await fetch('http://localhost:3001/groups', {
@@ -154,6 +151,14 @@ const UserDashboard = () => {
     }
   };
 
+  const handleChamaClick = (chama) => {
+    if (chama.userRole === 'Chairperson') {
+      navigate(`/chama/${chama.id}/chairperson`);
+    } else {
+      navigate(`/chama/${chama.id}/member`);
+    }
+  };
+
   const logout = () => {
     clearToken();
     navigate('/');
@@ -169,17 +174,17 @@ const UserDashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <Sidebar 
-        activeTab={activeTab} 
+      <Sidebar
+        activeTab={activeTab}
         setActiveTab={handleTabChange}
         collapsed={collapsed}
         setCollapsed={setCollapsed}
       />
 
       <div className={styles.dashboardContent}>
-        <DashboardHeader 
-          title={getPageTitle()} 
-          collapsed={collapsed} 
+        <DashboardHeader
+          title={getPageTitle()}
+          collapsed={collapsed}
           userName={currentUser.full_name}
         />
 
@@ -199,7 +204,7 @@ const UserDashboard = () => {
               )}
 
               {!loading && !error && (
-                <ChamaGrid chamas={chamas} />
+                <ChamaGrid chamas={chamas} onChamaClick={handleChamaClick} />
               )}
             </>
           )}
@@ -209,9 +214,9 @@ const UserDashboard = () => {
               <h2>Account Settings</h2>
               <div className={styles.userInfo}>
                 <div className={styles.userAvatar}>
-                  <img 
-                    src={currentUser.profile_picture || 'https://i.pravatar.cc/150?img=3'} 
-                    alt="User avatar" 
+                  <img
+                    src={currentUser.profile_picture || 'https://i.pravatar.cc/150?img=3'}
+                    alt="User avatar"
                   />
                 </div>
                 <div className={styles.userDetails}>
@@ -226,7 +231,7 @@ const UserDashboard = () => {
       </div>
 
       {showCreateModal && (
-        <CreateChamaModal 
+        <CreateChamaModal
           onClose={() => {
             setShowCreateModal(false);
             setActiveTab('home');
@@ -236,7 +241,7 @@ const UserDashboard = () => {
       )}
 
       {showJoinModal && (
-        <JoinChamaModal 
+        <JoinChamaModal
           onClose={() => {
             setShowJoinModal(false);
             setActiveTab('home');
