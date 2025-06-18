@@ -1,32 +1,44 @@
-/* ─────────────────────────────────────────────────────────────
-   Sidebar Container
-────────────────────────────────────────────────────────────── */
+:root {
+  --primary-blue: #4a90e2;
+  --secondary-green: #2ecc71;
+  --accent-red: #910510;
+  --dark-gray: #2c3e50;
+  --light-cream: #faf5e0;
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 70px;
+}
+
+/* Sidebar Container */
 .sidebar {
-  width: 250px;
+  width: var(--sidebar-width);
   height: 100vh;
-  background-color: var(--deep-red);
-  color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--primary-blue),
+    var(--secondary-green)
+  );
+  color: white;
   position: fixed;
-  z-index: 100;
-  border-top-right-radius: 25px;
-  border-bottom-right-radius: 25px;
-  overflow: visible; /* allow pill to visually spill */
+  top: 0;
+  left: 0;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
   transition: width 0.3s ease;
+  z-index: 100;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
 .collapsed {
-  width: 70px;
+  width: var(--sidebar-collapsed-width);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   User Profile Section
-────────────────────────────────────────────────────────────── */
+/* User Profile Section */
 .userProfile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 25px 10px 15px;
-  border-bottom: 1px solid #333;
+  padding: 25px 15px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
 }
 
@@ -36,6 +48,7 @@
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 10px;
+  border: 2px solid white;
 }
 
 .profileIcon {
@@ -51,13 +64,14 @@
 
 .userName {
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 600;
   margin: 5px 0 2px;
+  color: #fff;
 }
 
 .userEmail {
   font-size: 0.75rem;
-  color: #aaa;
+  color: #d1f2eb;
   margin: 0;
 }
 
@@ -69,23 +83,19 @@
   padding: 20px 0;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Collapse Button
-────────────────────────────────────────────────────────────── */
+/* Collapse Button */
 .collapseBtn {
   position: absolute;
   top: 8px;
   right: 10px;
   background: none;
   border: none;
-  color: #ccc;
+  color: #ffffffcc;
   font-size: 1.2rem;
   cursor: pointer;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Sidebar Menu
-────────────────────────────────────────────────────────────── */
+/* Sidebar Menu */
 .sidebarMenu {
   list-style: none;
   padding: 0;
@@ -95,79 +105,52 @@
   gap: 10px;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Menu Items
-────────────────────────────────────────────────────────────── */
+/* Menu Items */
 .menuItem {
   display: flex;
   align-items: center;
   padding: 12px 20px;
   margin: 0 10px;
   border-radius: 30px;
-  color: #eee;
+  color: white;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  z-index: 1;
+  font-weight: 500;
 }
 
 .menuItem:hover {
-  background-color: var(--cream);
-  color: #000;
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
 }
 
-/* ── Active Item with 'Pill' Effect ── */
+/* Active Item — PILL STYLE */
 .active {
-  background-color: var(--cream);
-  color: #000;
+  background-color: white;
+  color: var(--dark-gray);
   font-weight: bold;
-
-  border-top-left-radius: 30px;
-  border-bottom-left-radius: 30px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-
-  margin-right: -10px;
-  box-shadow: 0 0 10px rgba(250, 245, 224, 0.6);
+  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2);
+  border-radius: 30px; /* Full pill curve */
+  margin-right: -0.3px;
   z-index: 10;
+  position: relative;
 }
 
-/* Visual overflow (pill shape) */
+/* Removed ::before and ::after curves for clean pill look */
 .active::before,
 .active::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: transparent;
-  z-index: -1;
+  display: none;
 }
 
-.active::before {
-  top: -40px;
-  box-shadow: 20px 20px 0 var(--cream);
-}
-
-.active::after {
-  bottom: -40px;
-  box-shadow: 20px -20px 0 var(--cream);
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Icons
-────────────────────────────────────────────────────────────── */
+/* Icons */
 .icon {
   width: 20px;
   height: 20px;
   margin-right: 15px;
+  filter: brightness(0) invert(1);
   transition: margin 0.3s ease;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Collapsed Mode
-────────────────────────────────────────────────────────────── */
 .collapsed .menuItem {
   justify-content: center;
   padding: 12px 10px;
@@ -181,14 +164,15 @@
   display: none;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Logout Item Special Styling
-────────────────────────────────────────────────────────────── */
+/* Logout Styling */
 .menuItem.logout {
-  color: red;
+  color: #ff4d4d;
 }
 
 .menuItem.logout:hover {
-  background-color: #331010;
-  color: red;
+  background-color: rgba(255, 77, 77, 0.1);
+  color: white;
+}
+.active .icon {
+  filter: none;
 }

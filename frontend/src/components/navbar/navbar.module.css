@@ -1,10 +1,14 @@
+/* navbar.module.css */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .logo a {
@@ -24,6 +28,26 @@
   text-decoration: none;
   color: #000;
   font-weight: 500;
+  position: relative;
+}
+
+.navLinks a:not(.signupBtn, .loginBtn, .dashboardBtn):hover {
+  color: #910510;
+}
+
+.navLinks a:not(.signupBtn, .loginBtn, .dashboardBtn)::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #910510;
+  transition: width 0.3s ease;
+}
+
+.navLinks a:not(.signupBtn, .loginBtn, .dashboardBtn):hover::after {
+  width: 100%;
 }
 
 .signupBtn,
@@ -36,11 +60,113 @@
   color: white;
   text-decoration: none;
   font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.logoutBtn {
+  padding: 6px 12px;
+  border: 1px solid #910510;
+  border-radius: 4px;
+  background-color: #910510;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .signupBtn:hover,
 .loginBtn:hover,
-.dashboardBtn:hover {
+.dashboardBtn:hover,
+.logoutBtn:hover {
   background-color: #870101;
   border-color: #870101;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile menu styles */
+.menuButton {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 25px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.menuLine {
+  width: 100%;
+  height: 3px;
+  background-color: #2c3e50;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .menuButton {
+    display: flex;
+  }
+
+  .navLinks {
+    position: fixed;
+    top: 70px;
+    right: -100%;
+    flex-direction: column;
+    background-color: white;
+    width: 100%;
+    height: calc(100vh - 70px);
+    padding: 40px 20px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    transition: right 0.4s ease;
+    gap: 30px;
+  }
+
+  .navLinks.active {
+    right: 0;
+  }
+
+  .authLinks {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 20px;
+    gap: 15px;
+  }
+
+  .signupBtn,
+  .loginBtn,
+  .dashboardBtn,
+  .logoutBtn {
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+  }
+
+  /* Hamburger animation */
+  .line1 {
+    transform: rotate(45deg) translate(5px, 6px);
+  }
+
+  .line2 {
+    opacity: 0;
+  }
+
+  .line3 {
+    transform: rotate(-45deg) translate(5px, -6px);
+  }
+}
+
+.authLinks {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.navLink {
+  cursor: pointer;
+  position: relative;
 }

@@ -108,7 +108,7 @@
     {
 <<<<<<< Updated upstream
       "id": "8",
-      "user_id": 5,
+      "user_id": 2,
       "group_id": "17b9",
       "role": "Member",
       "joined_at": "2025-06-16T07:58:00.000Z"
@@ -121,9 +121,9 @@
       "joined_at": "2025-06-16T07:59:00.000Z"
     },
     {
-      "id": "07d2",
-      "user_id": 1,
-      "group_id": "1",
+      "id": "5ced",
+      "user_id": 4,
+      "group_id": "0947",
       "role": "Member",
       "joined_at": "2025-06-18T10:48:46.791Z"
     },
@@ -132,13 +132,6 @@
       "groupId": "1",
       "name": "Nkuri Kirima",
       "role": "Member"
-=======
-      "id": "bb33",
-      "user_id": 1,
-      "group_id": "c8db",
-      "role": "Chairperson",
-      "joined_at": "2025-06-17T15:17:59.098Z"
->>>>>>> Stashed changes
     }
   ],
   "goals": [

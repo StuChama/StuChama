@@ -9,6 +9,7 @@ const GroupDetails = () => {
   const [group, setGroup] = useState(null);
   const [rules, setRules] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [members, setMembers] = useState([]);
   const [error, setError] = useState('');
 
   const handleBack = () => {
@@ -27,9 +28,11 @@ const GroupDetails = () => {
       try {
         const groupRes = await axios.get(`http://localhost:3001/groups/${chamaId}`);
         const rulesRes = await axios.get(`http://localhost:3001/rules?group_id=${chamaId}`);
+        const membersRes = await axios.get(`http://localhost:3001/group_members?group_id=${chamaId}`);
 
         setGroup(groupRes.data);
         setRules(rulesRes.data);
+        setMembers(membersRes.data);
       } catch (err) {
         console.error(err);
         setError('Failed to load group details.');
