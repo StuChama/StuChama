@@ -5,6 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth'); // Handles signup & login
 const userRoutes = require('./routes/users'); // NEW LINE
+const chamaRoutes = require('./routes/ChamaRoutes');
 
 const pool = require('./db/pool'); // Ensure your db.js exports the pool
 
@@ -17,6 +18,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes); // NEW LINE
+app.use('/api/chamas', chamaRoutes);
 
 
 // Root endpoint (optional for testing)

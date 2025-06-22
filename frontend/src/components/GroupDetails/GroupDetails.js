@@ -27,36 +27,17 @@ const GroupDetails = () => {
     const fetchGroupDetails = async () => {
       try {
         // Fetch group details
-        const groupRes = await axios.get(`http://localhost:3001/groups/${chamaId}`);
-        
+        const groupRes = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}`);
+
         // Fetch rules
-        const rulesRes = await axios.get(`http://localhost:3001/rules?group_id=${chamaId}`);
-        
-        // Fetch group members
-        const membersRes = await axios.get(`http://localhost:3001/group_members?group_id=${chamaId}`);
-        
-        // Fetch user details for each member
-        const userIds = membersRes.data.map(member => member.user_id);
-        const usersRes = await axios.get(`http://localhost:3001/users?id=${userIds.join('&id=')}`);
-        
-        // Create a user map for quick lookup
-        const userMap = new Map();
-        usersRes.data.forEach(user => {
-          userMap.set(user.id, user);
-        });
-        
-        // Combine member data with user details
-        const membersWithDetails = membersRes.data.map(member => ({
-          id: member.id,
-          userId: member.user_id,
-          role: member.role,
-          name: userMap.get(member.user_id)?.full_name || 'Unknown Member',
-          joinedAt: member.joined_at
-        }));
+        const rulesRes = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/rules?group_id=${chamaId}`);
+
+        // Fetch group members (already includes full_name, role, etc.)
+        const membersRes = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/members`);
 
         setGroup(groupRes.data);
         setRules(rulesRes.data);
-        setMembers(membersWithDetails);
+        setMembers(membersRes.data);
       } catch (err) {
         console.error('Error fetching group details:', err);
         setError('Failed to load group details. Please try again later.');
@@ -92,12 +73,12 @@ const GroupDetails = () => {
               <p>No members found</p>
             ) : (
               members.map((member) => (
-                <div key={member.id} className={styles.memberItem}>
+                <div key={member.user_id} className={styles.memberItem}>
                   <div className={styles.memberAvatar}>
-                    {member.name.charAt(0).toUpperCase()}
+                    {member.full_name?.charAt(0).toUpperCase() || '?'}
                   </div>
                   <div className={styles.memberInfo}>
-                    <span className={styles.memberName}>{member.name}</span>
+                    <span className={styles.memberName}>{member.full_name}</span>
                     <span className={styles.memberRole}>{member.role}</span>
                   </div>
                 </div>

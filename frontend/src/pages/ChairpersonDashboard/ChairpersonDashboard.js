@@ -30,18 +30,27 @@ const ChairpersonDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchGroup = async () => {
-      try {
-        const res = await fetch(`http://localhost:3001/groups/${chamaId}`);
-        const data = await res.json();
-        setGroup(data);
-      } catch (err) {
-        console.error('Error fetching group:', err);
-      }
-    };
+   const fetchGroup = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}`);
 
-    fetchGroup();
-  }, [chamaId]);
+      const contentType = res.headers.get('Content-Type');
+      if (!res.ok) {
+        const errorText = contentType?.includes('application/json')
+          ? await res.json()
+          : await res.text();
+        throw new Error(errorText || 'Failed to fetch group');
+      }
+
+      const data = await res.json();
+      setGroup(data);
+    } catch (err) {
+      console.error('Error fetching group:', err.message);
+    }
+  };
+
+  fetchGroup();
+}, [chamaId]);
 
   const renderContent = () => {
     switch (activeTab) {

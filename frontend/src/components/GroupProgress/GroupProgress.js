@@ -22,26 +22,34 @@ const GroupProgress = () => {
       setLoading(true);
       try {
         // 1. Group info
-        const groupRes = await fetch(`http://localhost:3001/groups/${chamaId}`);
+        const groupRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}`);
         const groupData = await groupRes.json();
+        setGroup(groupData);
 
         // 2. Goal info for the group
-        const goalRes = await fetch(`http://localhost:3001/goals?group_id=${chamaId}`);
-        const [goalData] = await goalRes.json();
-        
-
-        // 3. User's contributions to that goal
-        const contribRes = await fetch(`http://localhost:3001/contributions?goal_id=${goalData?.id}&user_id=${currentUser.user_id}`);
-        const contribList = await contribRes.json();
-        
-
-        const allContribRes = await fetch(`http://localhost:3001/contributions?goal_id=${goalData?.id}`);
-        const allContribList = await allContribRes.json();
-        setAllContributions(allContribList);
-
-        setGroup(groupData);
+        const goalRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/goals?group_id=${chamaId}`);
+        const goalJson = await goalRes.json();
+        const goalData = Array.isArray(goalJson) && goalJson.length > 0 ? goalJson[0] : null;
         setGoal(goalData);
-        setContributions(contribList);
+
+        if (goalData?.id) {
+          // 3. User's contributions to that goal
+          const contribRes = await fetch(
+            `${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/contributions?goal_id=${goalData.id}&user_id=${currentUser.user_id}`
+          );
+          const contribList = await contribRes.json();
+          setContributions(Array.isArray(contribList) ? contribList : []);
+
+          // 4. All contributions to that goal
+          const allContribRes = await fetch(
+            `${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/contributions?goal_id=${goalData.id}`
+          );
+          const allContribList = await allContribRes.json();
+          setAllContributions(Array.isArray(allContribList) ? allContribList : []);
+        } else {
+          setContributions([]);
+          setAllContributions([]);
+        }
       } catch (err) {
         console.error('Error loading group progress:', err);
       } finally {
@@ -55,17 +63,20 @@ const GroupProgress = () => {
   if (loading) return <div className={styles.loading}>Loading progress data...</div>;
   if (!group) return <div className={styles.error}>Group not found</div>;
 
-  const totalGroupContribution = allContributions.reduce((sum, c) => sum + c.amount, 0);
-  const progressPercent = goal ? Math.min(100, Math.round((totalGroupContribution / goal.target_amount) * 100)) : 0;
+  const totalGroupContribution = Array.isArray(allContributions)
+    ? allContributions.reduce((sum, c) => sum + c.amount, 0)
+    : 0;
+
+  const progressPercent = goal
+    ? Math.min(100, Math.round((totalGroupContribution / goal.target_amount) * 100))
+    : 0;
 
   return (
     <div className={styles.groupProgressContainer}>
-      
-
       <div className={styles.header}>
         <h2 className={styles.groupName}>{group.group_name}</h2>
         <p className={styles.subtitle}>CHAMA GOAL PROGRESS</p>
-        
+
         {goal && (
           <div className={styles.progressInfo}>
             <div className={styles.amounts}>
@@ -73,10 +84,7 @@ const GroupProgress = () => {
               <span className={styles.targetAmount}>/ KES {goal.target_amount.toLocaleString()}</span>
             </div>
             <div className={styles.progressBar}>
-              <div 
-                className={styles.progressFill} 
-                style={{ width: `${progressPercent}%` }}
-              >
+              <div className={styles.progressFill} style={{ width: `${progressPercent}%` }}>
                 <div className={styles.progressLabel}>{progressPercent}%</div>
               </div>
             </div>
@@ -86,29 +94,31 @@ const GroupProgress = () => {
 
       <div className={styles.cardsContainer}>
         <div className={styles.card}>
-          {goal && (
+          {goal ? (
             <>
               <div className={styles.cardSection}>
                 <h3 className={styles.cardTitle}>Deadline</h3>
                 <p className={styles.cardValue}>{new Date(goal.deadline).toLocaleDateString()}</p>
               </div>
-              
+
               <div className={styles.cardSection}>
                 <h3 className={styles.cardTitle}>Next Payment</h3>
                 <p className={styles.cardValue}>–</p>
               </div>
-              
+
               <div className={styles.cardSection}>
                 <h3 className={styles.cardTitle}>Amount Due</h3>
                 <p className={styles.cardValue}>KES {(goal.target_amount / 10).toLocaleString()}</p>
               </div>
             </>
+          ) : (
+            <p className={styles.noRecords}>No goal set for this group yet.</p>
           )}
         </div>
 
         <div className={styles.card}>
           <h3 className={styles.paymentTitle}>Payment History</h3>
-          {contributions.length > 0 ? (
+          {Array.isArray(contributions) && contributions.length > 0 ? (
             <ul className={styles.historyList}>
               {contributions.map((c) => (
                 <li key={c.id} className={styles.historyItem}>
@@ -124,12 +134,18 @@ const GroupProgress = () => {
       </div>
 
       <div className={styles.buttonContainer}>
-        <button className={styles.contributeButton} onClick={() => setShowContribution(true)}>
+        <button
+          className={styles.contributeButton}
+          onClick={() => setShowContribution(true)}
+          disabled={!goal}
+        >
           Contribute to Goal
         </button>
       </div>
 
-      {showContribution && <ContributionButton onClose={() => setShowContribution(false)} goalId={goal?.id} />}
+      {showContribution && goal && (
+        <ContributionButton onClose={() => setShowContribution(false)} goalId={goal.id} />
+      )}
     </div>
   );
 };

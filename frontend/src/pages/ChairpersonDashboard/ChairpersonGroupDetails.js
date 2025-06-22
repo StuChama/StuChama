@@ -13,33 +13,18 @@ const ChairpersonGroupDetails = ({ chamaId }) => {
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
-        // Fetch group details
-        const groupRes = await fetch(`http://localhost:3001/groups/${chamaId}`);
+        const groupRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}`);
         if (!groupRes.ok) throw new Error('Failed to fetch group details');
         const groupData = await groupRes.json();
         setGroupDetails(groupData);
 
-        // Fetch group members
-        const membersRes = await fetch(`http://localhost:3001/group_members?group_id=${chamaId}`);
+        const membersRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/members`);
         if (!membersRes.ok) throw new Error('Failed to fetch members');
         const membersData = await membersRes.json();
 
-        // Fetch related users
-        const userIds = membersData.map((m) => m.user_id);
-        const usersRes = await fetch(`http://localhost:3001/users?id=${userIds.join('&id=')}`);
-        if (!usersRes.ok) throw new Error('Failed to fetch user details');
-        const usersData = await usersRes.json();
-
-        const userMap = new Map(usersData.map((u) => [u.id, u.full_name]));
-
-        const detailed = membersData.map((m) => ({
-          ...m,
-          name: userMap.get(m.user_id) || 'Unknown',
-        }));
-
-        setMembers(detailed);
+        setMembers(membersData);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err.message);
@@ -57,26 +42,42 @@ const ChairpersonGroupDetails = ({ chamaId }) => {
       return;
     }
 
-    // Here you'd normally search for an existing user and use their `user_id`
-    // For now, simulate it by creating a new user (if necessary) or skipping this step
-    alert('This feature needs backend integration with user lookup');
-    setIsAddingMember(false);
-    setNewMember({ name: '', role: '' });
+    try {
+      const searchRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/search?name=${encodeURIComponent(newMember.name)}`);
+      const users = await searchRes.json();
+      if (!users.length) throw new Error('User not found');
+
+      const userId = users[0].user_id;
+
+      const addRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/members`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, group_id: chamaId, role: newMember.role })
+      });
+
+      if (!addRes.ok) throw new Error('Failed to add member');
+
+      const added = await addRes.json();
+      setMembers(prev => [...prev, { ...added, full_name: newMember.name }]);
+      setNewMember({ name: '', role: '' });
+      setIsAddingMember(false);
+    } catch (err) {
+      console.error('Error adding member:', err);
+      alert(err.message);
+    }
   };
 
   const handleRemoveMember = async (memberId) => {
     if (!window.confirm('Are you sure you want to remove this member?')) return;
-    
+
     try {
-      const response = await fetch(`http://localhost:3001/group_members/${memberId}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/members/${memberId}`, {
         method: 'DELETE',
       });
 
-      if (response.ok) {
-        setMembers((prev) => prev.filter((m) => m.id !== memberId));
-      } else {
-        throw new Error('Failed to remove member');
-      }
+      if (!response.ok) throw new Error('Failed to remove member');
+
+      setMembers((prev) => prev.filter((m) => m.user_id !== memberId));
     } catch (err) {
       console.error('Error removing member:', err);
       alert('Failed to remove member');
@@ -85,32 +86,31 @@ const ChairpersonGroupDetails = ({ chamaId }) => {
 
   const handleAppointTreasurer = async (memberId) => {
     if (!window.confirm('Are you sure you want to appoint this member as treasurer?')) return;
-    
+
     try {
       const existingTreasurer = members.find((m) => m.role === 'Treasurer');
 
       if (existingTreasurer) {
-        const demoteRes = await fetch(`http://localhost:3001/group_members/${existingTreasurer.id}`, {
+        const demoteRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/members/${existingTreasurer.user_id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ role: 'Member' }),
+          body: JSON.stringify({ role: 'Member', group_id: chamaId }),
         });
 
         if (!demoteRes.ok) throw new Error('Failed to demote existing treasurer');
       }
 
-      const promoteRes = await fetch(`http://localhost:3001/group_members/${memberId}`, {
+      const promoteRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/members/${memberId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: 'Treasurer' }),
+        body: JSON.stringify({ role: 'Treasurer', group_id: chamaId }),
       });
 
       if (!promoteRes.ok) throw new Error('Failed to appoint treasurer');
 
-      // Update local state
       setMembers(prev => prev.map(m => {
-        if (m.id === memberId) return {...m, role: 'Treasurer'};
-        if (m.role === 'Treasurer') return {...m, role: 'Member'};
+        if (m.user_id === memberId) return { ...m, role: 'Treasurer' };
+        if (m.role === 'Treasurer') return { ...m, role: 'Member' };
         return m;
       }));
     } catch (err) {
@@ -207,7 +207,7 @@ const ChairpersonGroupDetails = ({ chamaId }) => {
             <button 
               className={styles.addButton} 
               onClick={handleAddMember}
-              disabled={!newMember.name || !newMember.role}
+              disabled={!newMember.full_name || !newMember.role}
             >
               Add to Group
             </button>
@@ -215,32 +215,35 @@ const ChairpersonGroupDetails = ({ chamaId }) => {
         )}
 
         <div className={styles.memberGrid}>
+          {console.log("Members:", members)}
+          {console.log("Members missing name:", members.filter(m => !m.name))}
+
           {members.map((member) => (
-            <div key={member.id} className={styles.memberCard}>
+            <div key={member.user_id} className={styles.memberCard}>
               <div className={styles.memberHeader}>
                 <div className={styles.memberInitial}>
-                  {member.name.charAt(0)}
+                  {member.full_name.charAt(0)}
                 </div>
                 <div className={styles.memberInfo}>
-                  <span className={styles.memberName}>{member.name}</span>
+                  <span className={styles.memberName}>{member.full_name}</span>
                   <span className={member.role === 'Treasurer' ? styles.treasurerRole : styles.memberRole}>
                     {member.role}
                   </span>
                 </div>
               </div>
-              
+
               <div className={styles.memberActions}>
                 {member.role !== 'Treasurer' && member.role !== 'Chairperson' && (
                   <button 
                     className={styles.actionButton}
-                    onClick={() => handleAppointTreasurer(member.id)}
+                    onClick={() => handleAppointTreasurer(member.user_id)}
                   >
                     Appoint Treasurer
                   </button>
                 )}
                 <button 
                   className={styles.removeButton}
-                  onClick={() => handleRemoveMember(member.id)}
+                  onClick={() => handleRemoveMember(member.user_id)}
                 >
                   Remove
                 </button>

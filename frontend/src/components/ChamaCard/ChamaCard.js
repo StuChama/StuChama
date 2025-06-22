@@ -15,7 +15,7 @@ const ChamaCard = ({ chama }) => {
 
    const handleViewDetails = () => {
     const role = chama.userRole.toLowerCase(); // make it lowercase to match route names
-    navigate(`/chama/${chama.id}/${role}`);
+    navigate(`/chama/${chama.group_id}/${role}`);
   };
 
   return (

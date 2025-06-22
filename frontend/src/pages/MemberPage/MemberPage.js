@@ -29,7 +29,7 @@ const MemberPage = () => {
   useEffect(() => {
     const fetchChamaData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/groups/${chamaId}`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}`);
         if (!response.ok) throw new Error('Failed to fetch chama data');
         const data = await response.json();
         setChamaData(data);

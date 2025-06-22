@@ -60,6 +60,22 @@
       "created_by": 1,
       "created_at": "2025-06-17T15:17:59.060Z",
       "group_code": "CHA6385"
+    },
+    {
+      "id": "e3f8",
+      "group_name": "RecipeRealm",
+      "description": "creating recipes",
+      "created_by": 1,
+      "created_at": "2025-06-20T18:33:48.660Z",
+      "group_code": "CHA6113"
+    },
+    {
+      "id": "c5e3",
+      "group_name": "Eugene's Music",
+      "description": "tunachanga for Eugene",
+      "created_by": 1,
+      "created_at": "2025-06-22T08:54:11.500Z",
+      "group_code": "CHA6950"
     }
   ],
   "group_members": [
@@ -88,7 +104,7 @@
       "id": "5",
       "user_id": 1,
       "group_id": "0947",
-      "role": "Treasurer",
+      "role": "Member",
       "joined_at": "2025-06-15T15:14:00.000Z"
     },
     {
@@ -106,7 +122,6 @@
       "joined_at": "2025-06-16T07:57:13.436Z"
     },
     {
-
       "id": "8",
       "user_id": 2,
       "group_id": "17b9",
@@ -124,14 +139,29 @@
       "id": "5ced",
       "user_id": 4,
       "group_id": "0947",
-      "role": "Member",
+      "role": "Treasurer",
       "joined_at": "2025-06-18T10:48:46.791Z"
     },
     {
-      "id": "77d1",
-      "groupId": "1",
-      "name": "Nkuri Kirima",
-      "role": "Member"
+      "id": "e0c4",
+      "user_id": 1,
+      "group_id": "e3f8",
+      "role": "Chairperson",
+      "joined_at": "2025-06-20T18:33:48.697Z"
+    },
+    {
+      "id": "c3f1",
+      "user_id": 1,
+      "group_id": "c5e3",
+      "role": "Chairperson",
+      "joined_at": "2025-06-22T08:54:11.568Z"
+    },
+    {
+      "id": "3a54",
+      "user_id": 2,
+      "group_id": "c5e3",
+      "role": "Member",
+      "joined_at": "2025-06-22T12:02:51.873Z"
     }
   ],
   "goals": [

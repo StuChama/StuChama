@@ -21,9 +21,9 @@ class ChairpersonChamaModel {
   static async getChamaMembers(group_id) {
     try {
       const result = await pool.query(
-        `SELECT users.id, users.full_name, users.email, users.profile_picture, group_members.role
+        `SELECT users.user_id, users.full_name, users.email, users.profile_picture, group_members.role
          FROM group_members
-         JOIN users ON group_members.user_id = users.id
+         JOIN users ON group_members.user_id = users.user_id
          WHERE group_members.group_id = $1`,
         [group_id]
       );
@@ -33,6 +33,36 @@ class ChairpersonChamaModel {
       throw error;
     }
   }
+
+  static async createChama({ group_name, description, created_by, group_code }) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO groups (group_name, description, created_by, group_code, created_at)
+       VALUES ($1, $2, $3, $4, NOW()) RETURNING *`,
+      [group_name, description, created_by, group_code]
+    );
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error creating chama:', error);
+    throw error;
+  }
+}
+
+// Add member to chama
+static async addMemberToChama({ user_id, group_id, role }) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO group_members (user_id, group_id, role, joined_at)
+       VALUES ($1, $2, $3, NOW()) RETURNING *`,
+      [user_id, group_id, role]
+    );
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error adding member to chama:', error);
+    throw error;
+  }
+}
+
 
   // Get all fines for a chama
   static async getChamaFines(group_id) {
@@ -47,6 +77,25 @@ class ChairpersonChamaModel {
       throw error;
     }
   }
+
+static async getUserChamas(user_id) {
+  try {
+    const result = await pool.query(
+      `
+      SELECT g.*, gm.role AS "userRole"
+      FROM groups g
+      JOIN group_members gm ON g.group_id = gm.group_id
+      WHERE gm.user_id = $1
+      `,
+      [user_id]
+    );
+    return result.rows;
+  } catch (error) {
+    console.error('Error fetching user chamas:', error);
+    throw error;
+  }
+}
+
 
   // Get fines for a specific member in a chama
   static async getMemberFines(group_id, user_id) {
@@ -63,6 +112,21 @@ class ChairpersonChamaModel {
     }
   }
 
+  
+static async getAllContributionsToGoal(goal_id) {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM contributions WHERE goal_id = $1`,
+      [goal_id]
+    );
+    return result.rows;
+  } catch (error) {
+    console.error('Error fetching all contributions to goal:', error);
+    throw error;
+  }
+}
+
+
   // Get all rules for a chama
   static async getChamaRules(group_id) {
     try {
@@ -77,7 +141,7 @@ class ChairpersonChamaModel {
     }
   }
 
-  // Get goal info for a chama
+   // Get goal info for a chama
   static async getChamaGoals(group_id) {
     try {
       const result = await pool.query(
@@ -90,7 +154,19 @@ class ChairpersonChamaModel {
       throw error;
     }
   }
+  // Get all chamas (groups)
+static async getAllChamas() {
+  try {
+    const result = await pool.query('SELECT * FROM groups');
+    return result.rows;
+  } catch (error) {
+    console.error('Error fetching all chamas:', error);
+    throw error;
+  }
+}
 
+
+ 
   // Add new fine
   static async addFine(group_id, user_id, fineData) {
     try {

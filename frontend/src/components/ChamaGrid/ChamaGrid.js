@@ -10,7 +10,7 @@ const ChamaGrid = ({ chamas, onChamaClick }) => {
       {chamas.length > 0 ? (
         chamas.map((chama) => (
           <ChamaCard
-            key={chama.id}
+            key={chama.group_id}
             chama={chama}
             onClick={() => onChamaClick(chama)}
           />
