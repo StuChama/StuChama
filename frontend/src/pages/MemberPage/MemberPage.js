@@ -1,11 +1,13 @@
 // src/pages/MemberPage/MemberPage.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+
 import GroupDetails from '../../components/GroupDetails/GroupDetails';
 import GroupProgress from '../../components/GroupProgress/GroupProgress';
 import MyFines from '../../components/MyFines/MyFines';
 import { UserContext } from '../../context/UserContext';
 import styles from './MemberPage.module.css';
+import { useNavigate } from 'react-router-dom';
 
 // Import icons
 import groupIcon from '../../assets/details (1).png';
@@ -16,12 +18,13 @@ import logoutIconHover from '../../assets/logout1.png';
 
 const MemberPage = () => {
   const { chamaId } = useParams();
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, clearToken } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState('groupDetails');
   const [chamaData, setChamaData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredTab, setHoveredTab] = useState(null);
+  const navigate = useNavigate();
   
   useEffect(() => {
     const fetchChamaData = async () => {
@@ -39,6 +42,11 @@ const MemberPage = () => {
     
     fetchChamaData();
   }, [chamaId]);
+
+  const logout = () => {
+    clearToken();
+    navigate('/');
+  };
 
   const renderContent = () => {
     if (loading) return <div className={styles.loading}>Loading chama details...</div>;
@@ -131,7 +139,7 @@ const MemberPage = () => {
           {/* Logout */}
           <li
             className={styles.menuItem}
-            onClick={() => (window.location.href = '/')}
+            onClick={() => (logout())}
             onMouseEnter={() => setHoveredTab('logout')}
             onMouseLeave={() => setHoveredTab(null)}
             title="Logout"

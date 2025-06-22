@@ -72,3 +72,21 @@
   text-decoration: none;
   font-weight: bold;
 }
+
+.formGroup {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.errorInput {
+  border-color: #e74c3c !important;
+  background-color: #fffafa;
+}
+
+.errorText {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  text-align: left;
+  width: 100%;
+}

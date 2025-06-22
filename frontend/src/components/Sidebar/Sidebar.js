@@ -32,7 +32,7 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed }) => {
       <div className={styles.userProfile}>
         <div className={styles.profileImage}>
           <img
-            src={currentUser?.profile_picture || 'https://i.pravatar.cc/150?img=1'}
+            src={currentUser.profile_picture}
             alt="Profile"
             className={styles.profileIcon}
           />
@@ -41,7 +41,7 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed }) => {
         {!collapsed && currentUser && (
           <div className={styles.userInfo}>
             <h3 className={styles.userName}>{currentUser.full_name}</h3>
-            <p className={styles.userRole}>Member</p>
+            <p className={styles.userEmail}>{currentUser.email}</p>
           </div>
         )}
       </div>

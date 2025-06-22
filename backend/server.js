@@ -4,6 +4,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth'); // Handles signup & login
+const userRoutes = require('./routes/users'); // NEW LINE
+
 const pool = require('./db/pool'); // Ensure your db.js exports the pool
 
 const app = express();
@@ -14,6 +16,8 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes); // NEW LINE
+
 
 // Root endpoint (optional for testing)
 app.get('/', (req, res) => {

@@ -5,24 +5,50 @@ const UserModel = require("../models/UserModel");
 const pool = require('../db/pool');
 
 
+
 const registerUserController = async (req, res) => {
-  const { full_name, email, phone_number, password } = req.body;
+  const { full_name, email, phone_number, password, confirmPassword } = req.body;
 
   try {
+    // Validate required fields
+    if (!full_name || !email || !password || !confirmPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Validate email
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    // Validate password match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Validate password strength
+    if (!validator.isStrongPassword(password, {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1
+    })) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters with uppercase, lowercase, number, and special character"
+      });
+    }
+
     // Check for existing username
     const userExists = await UserModel.findUserByUsername(full_name);
-    if (userExists) return res.status(400).json({ message: "Username already in use" });
+    if (userExists) {
+      return res.status(409).json({ message: "Username already in use" });
+    }
 
     // Check for existing email
     const emailExists = await UserModel.findUserByEmail(email);
-    if (emailExists) return res.status(400).json({ message: "Email already in use" });
-
-    // Validate email
-    if (!validator.isEmail(email)) return res.status(400).json({ message: "Invalid email" });
-
-    // Validate password
-    if (!validator.isStrongPassword(password))
-      return res.status(400).json({ message: "Password must be at least 8 characters, with one uppercase letter, one lowercase letter, one number, and one special character." });
+    if (emailExists) {
+      return res.status(409).json({ message: "Email already registered" });
+    }
 
     // Hash password
     const salt = await bcrypt.genSalt(12);
@@ -36,7 +62,7 @@ const registerUserController = async (req, res) => {
       password: hashedPassword
     });
 
-    // Token
+    // Generate token
     const token = generateToken(newUser.user_id);
 
     res.status(201).json({
@@ -55,14 +81,28 @@ const loginUserController = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    if (!email || !password)
-      return res.status(400).json({ message: "Please fill in all fields" });
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    // Validate email format
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
 
     const user = await UserModel.findUserByEmail(email);
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    
+    // User not found
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
 
+    // Validate password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
 
     const token = generateToken(user.user_id);
 
@@ -72,7 +112,8 @@ const loginUserController = async (req, res) => {
         user_id: user.user_id,
         full_name: user.full_name,
         email: user.email,
-        phone_number: user.phone_number 
+        phone_number: user.phone_number,
+        profile_picture: user.profile_picture
       },
       token
     });
@@ -83,13 +124,15 @@ const loginUserController = async (req, res) => {
   }
 };
 
+
+
 const getCurrentUserController = async (req, res) => {
   try {
     const userId = req.userId;
     
 
     const result = await pool.query(
-      'SELECT user_id, full_name, email, phone_number, created_at FROM users WHERE user_id = $1',
+      'SELECT user_id, full_name, email, phone_number, profile_picture, created_at FROM users WHERE user_id = $1',
       [userId]
     );
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import styles from './MyFines.module.css';
-import BackButton from '../BackButton/BackButton';
+
 import ContributionButton from '../ContributionButton/ContributionButton';
 import { UserContext } from '../../context/UserContext';
 import { useParams } from 'react-router-dom';
@@ -15,9 +15,7 @@ const MyFines = () => {
   const [loading, setLoading] = useState(true);
   const [totalFines, setTotalFines] = useState(0);
 
-  const handleBack = () => {
-    window.history.back();
-  };
+  
 
   useEffect(() => {
     const fetchFines = async () => {
@@ -64,7 +62,7 @@ const MyFines = () => {
   return (
     <div className={styles.MyFinesContainer}>
       <div className={styles.headerRow}>
-        <BackButton onClick={handleBack} />
+        
       </div>
 
       <h3 className={styles.title}>MY FINES</h3>

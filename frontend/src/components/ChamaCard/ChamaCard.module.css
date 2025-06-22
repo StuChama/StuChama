@@ -5,11 +5,12 @@
   padding: 25px;
   text-align: center;
   transition: all 0.3s ease;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   border: 1px solid rgba(74, 144, 226, 0.1);
+  height: auto; /* Changed from 100% */
+  min-height: 300px; /* Ensures minimum height */
 }
 
 .chamaCard:hover {
@@ -44,7 +45,7 @@
   flex-direction: column;
   margin: 15px 0 25px;
   gap: 10px;
-  flex-grow: 1;
+  flex-grow: 1; /* Allows content to expand */
   color: #555;
   width: 100%;
 }
@@ -80,4 +81,11 @@
   opacity: 0.9;
   transform: translateY(-3px);
   box-shadow: 0 6px 15px rgba(46, 204, 113, 0.35);
+}
+
+/* Add media query for better responsiveness */
+@media (max-width: 600px) {
+  .chamaGrid {
+    grid-template-columns: 1fr; /* Single column on small screens */
+  }
 }

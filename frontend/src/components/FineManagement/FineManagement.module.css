@@ -1,14 +1,136 @@
-.fineItem {
-  background: #fff;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+/* FineManagement.module.css */
+.sectionTitle {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin: 0 0 25px 0;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.sectionTitle::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to right, #4a90e2, #2ecc71);
+  border-radius: 2px;
+}
+
+.fineGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.fineCard {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #e74c3c;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fineCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.fineHeader {
   display: flex;
   justify-content: space-between;
-  border-left: 4px solid #f44336;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+}
+
+.memberName {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.1rem;
 }
 
 .fineAmount {
-  color: #d32f2f;
-  font-weight: bold;
+  color: #e74c3c;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.fineDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+}
+
+.detailLabel {
+  font-weight: 500;
+  color: #7f8c8d;
+}
+
+.detailValue {
+  color: #2c3e50;
+  font-weight: 500;
+  text-align: right;
+  max-width: 70%;
+}
+
+.fineActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.actionButton {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.editButton {
+  background: #95a5a6;
+}
+
+.noFines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  grid-column: 1 / -1;
+  padding: 40px 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #bdc3c7;
+  text-align: center;
+}
+
+.noFinesIcon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: #7f8c8d;
+}
+
+.noFines p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin: 0;
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styles from './GroupProgress.module.css';
-import BackButton from '../BackButton/BackButton';
+
 import ContributionButton from '../ContributionButton/ContributionButton';
 import { UserContext } from '../../context/UserContext';
 import { useParams } from 'react-router-dom';
@@ -60,7 +60,7 @@ const GroupProgress = () => {
 
   return (
     <div className={styles.groupProgressContainer}>
-      <BackButton />
+      
 
       <div className={styles.header}>
         <h2 className={styles.groupName}>{group.group_name}</h2>

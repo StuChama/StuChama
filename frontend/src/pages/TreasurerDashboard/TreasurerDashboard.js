@@ -2,11 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import GroupDetails from '../../components/GroupDetails/GroupDetails';
+import { useNavigate } from 'react-router-dom';
 import GroupProgress from '../../components/GroupProgress/GroupProgress';
 import MyFines from '../../components/MyFines/MyFines';
 import FineManagement from '../../components/FineManagement/FineManagement';
 import styles from './TreasurerDashboard.module.css';
 import { FaArrowLeft, FaSearch, FaDownload } from 'react-icons/fa';
+import UploadMeetingNotes from '../../components/UploadMeetingNotes/UploadMeetingNotes';
 
 // Import icons
 import groupIcon from '../../assets/details (1).png';
@@ -16,16 +18,18 @@ import fineIcon from '../../assets/fine (1).png';
 import myFinesIcon from '../../assets/fine (1).png';
 import logoutIcon from '../../assets/logout.png';
 import logoutIconHover from '../../assets/logout1.png';
+import meetingnotesIcon from '../../assets/notes.png';
 
 const TreasurerDashboard = () => {
   const { chamaId } = useParams();
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, clearToken } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState('TransactionReport');
   const [group, setGroup] = useState(null);
   const [searchCode, setSearchCode] = useState('');
   const [transactions, setTransactions] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredTab, setHoveredTab] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -37,6 +41,9 @@ const TreasurerDashboard = () => {
         console.error('Error fetching group:', err);
       }
     };
+
+    
+    
 
     const fetchTransactions = async () => {
       try {
@@ -55,6 +62,11 @@ const TreasurerDashboard = () => {
   const filteredTransactions = transactions.filter(txn =>
     txn.mpesa_code.toLowerCase().includes(searchCode.toLowerCase())
   );
+
+   const logout = () => {
+    clearToken();
+    navigate('/');
+  };
 
   const menuItems = [
     {
@@ -82,6 +94,12 @@ const TreasurerDashboard = () => {
       label: 'Fine Management',
       icon: fineIcon,
     },
+    {
+      tab: 'UploadMeetingNotes',
+      label: 'Upload Notes',
+      icon: meetingnotesIcon, // You can use a different icon specific to uploads
+    },
+
   ];
 
   const renderContent = () => {
@@ -130,6 +148,8 @@ const TreasurerDashboard = () => {
         return <MyFines chamaId={chamaId} userId={currentUser?.id} />;
       case 'FineManagement':
         return <FineManagement chamaId={chamaId} />;
+      case 'UploadMeetingNotes':
+        return <UploadMeetingNotes chamaId={chamaId} />;
       default:
         return null;
     }
@@ -191,7 +211,7 @@ const TreasurerDashboard = () => {
           {/* Logout */}
           <li
             className={styles.menuItem}
-            onClick={() => (window.location.href = '/')}
+            onClick={() => (logout())}
             onMouseEnter={() => setHoveredTab('logout')}
             onMouseLeave={() => setHoveredTab(null)}
             title="Logout"

@@ -1,0 +1,154 @@
+/* UploadMeetingNotes.module.css */
+.uploadContainer {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(74, 144, 226, 0.15);
+  border: 1px solid rgba(74, 144, 226, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+}
+
+.header h3 {
+  color: var(--dark-gray);
+  font-size: 1.5rem;
+  margin: 0 0 8px 0;
+  position: relative;
+}
+
+.header p {
+  color: #555;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 600;
+  color: var(--primary-blue);
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.formGroup input[type="text"] {
+  width: 100%;
+  padding: 12px 20px;
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 30px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.formGroup input[type="text"]:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.fileUploadArea {
+  border: 2px dashed rgba(74, 144, 226, 0.3);
+  border-radius: 12px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: rgba(245, 249, 255, 0.5);
+}
+
+.fileUploadArea:hover {
+  border-color: var(--primary-blue);
+  background-color: rgba(74, 144, 226, 0.05);
+}
+
+.uploadPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #777;
+}
+
+.uploadIcon {
+  font-size: 3rem;
+  color: var(--primary-blue);
+  margin-bottom: 10px;
+}
+
+.filePreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 500;
+  color: var(--dark-gray);
+}
+
+.pdfIcon {
+  font-size: 2rem;
+  color: #e74c3c;
+}
+
+.uploadButton {
+  background: linear-gradient(
+    135deg,
+    var(--primary-blue),
+    var(--secondary-green)
+  );
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(74, 144, 226, 0.25);
+  width: 100%;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.uploadButton:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(46, 204, 113, 0.35);
+}
+
+.uploadButton:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.message {
+  margin-top: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.success {
+  background-color: rgba(46, 204, 113, 0.15);
+  color: #27ae60;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.error {
+  background-color: rgba(231, 76, 60, 0.15);
+  color: #c0392b;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}

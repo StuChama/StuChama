@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 import GroupDetails from './ChairpersonGroupDetails';
+import BackButton from '../../components/BackButton/BackButton';
 import Rules from './Rules';
 import GroupProgress from '../../components/GroupProgress/GroupProgress';
 import FineManagement from '../../components/FineManagement/FineManagement';
@@ -20,11 +22,12 @@ import styles from './ChairpersonDashboard.module.css';
 
 const ChairpersonDashboard = () => {
   const { chamaId } = useParams();
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, clearToken } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState('GroupDetails');
   const [group, setGroup] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredTab, setHoveredTab] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -56,7 +59,10 @@ const ChairpersonDashboard = () => {
         return null;
     }
   };
-
+const logout = () => {
+    clearToken();
+    navigate('/');
+  };
   const menuItems = [
     {
       tab: 'GroupDetails',
@@ -141,7 +147,7 @@ const ChairpersonDashboard = () => {
           {/* Logout */}
           <li
             className={styles.menuItem}
-            onClick={() => (window.location.href = '/')}
+            onClick={() => (logout())}
             onMouseEnter={() => setHoveredTab('logout')}
             onMouseLeave={() => setHoveredTab(null)}
             title="Logout"
@@ -158,7 +164,10 @@ const ChairpersonDashboard = () => {
 
       <main className={styles.mainPanel}>
         <h2 className={styles.groupTitle}>{group?.group_name}</h2>
+        
+
         <div className={styles.contentWrapper}>
+          <BackButton />
           {renderContent()}
         </div>
       </main>
