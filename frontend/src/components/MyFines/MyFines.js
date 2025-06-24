@@ -20,13 +20,10 @@ const MyFines = () => {
   useEffect(() => {
     const fetchFines = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/fines`, {
-          params: {
-            user_id: currentUser.user_id,
-            group_id: chamaId,
-            status: 'Unpaid',
-          },
-        });
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/member/groups/${chamaId}/fines`, {
+  params: { user_id: currentUser.user_id, status: 'Unpaid' }
+});
+
         setFines(response.data);
         
         // Calculate total fines
@@ -112,6 +109,9 @@ const MyFines = () => {
       {showContribution && (
         <ContributionButton
           amount={selectedFine?.amount}
+          fineId={selectedFine?.fine_id}
+          groupId={chamaId}
+          goalId={null}
           onClose={handleCloseContribution}
         />
       )}

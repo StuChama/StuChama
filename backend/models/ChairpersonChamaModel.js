@@ -63,6 +63,27 @@ static async addMemberToChama({ user_id, group_id, role }) {
   }
 }
 
+ // Get fines for a user in a specific chama (optionally filtered by status)
+  static async getFinesByUser(user_id, group_id, status = 'Unpaid') {
+    try {
+      const values = [user_id, group_id];
+      let query = `
+        SELECT * FROM fines
+        WHERE user_id = $1 AND group_id = $2
+      `;
+
+      if (status) {
+        query += ` AND status = $3`;
+        values.push(status);
+      }
+
+      const result = await pool.query(query, values);
+      return result.rows;
+    } catch (error) {
+      console.error('Error fetching user fines:', error);
+      throw error;
+    }
+  }
 
   // Get all fines for a chama
   static async getChamaFines(group_id) {
@@ -113,18 +134,26 @@ static async getUserChamas(user_id) {
   }
 
   
-static async getAllContributionsToGoal(goal_id) {
+static async getAllContributionsToGoal(goal_id, user_id = null) {
   try {
-    const result = await pool.query(
-      `SELECT * FROM contributions WHERE goal_id = $1`,
-      [goal_id]
-    );
+    let query = `SELECT * FROM contributions WHERE goal_id = $1`;
+    const values = [goal_id];
+
+    if (user_id) {
+      query += ` AND user_id = $2`;
+      values.push(user_id);
+    }
+
+    query += ` ORDER BY contributed_at DESC`;
+
+    const result = await pool.query(query, values);
     return result.rows;
   } catch (error) {
-    console.error('Error fetching all contributions to goal:', error);
+    console.error('Error fetching contributions to goal:', error);
     throw error;
   }
 }
+
 
 
   // Get all rules for a chama

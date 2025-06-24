@@ -14,12 +14,12 @@ class TreasurerChamaModel {
         }
     }
 
-    static async getTransactions(group_id) {
+    static async getGroupTransactions(group_id) {
         try {
             const result = await pool.query(
                 `SELECT t.transaction_id, u.full_name AS member_name, t.mpesa_code, t.amount, t.status, t.transaction_date
                  FROM transactions t
-                 JOIN users u ON t.user_id = u.id
+                 JOIN users u ON t.user_id = u.user_id
                  WHERE t.group_id = $1
                  ORDER BY t.transaction_date DESC`,
                 [group_id]

@@ -3,6 +3,7 @@ import styles from './GroupDetails.module.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import BackButton from '../BackButton/BackButton';
+import { FaDownload, FaCalendarAlt, FaUser } from 'react-icons/fa';
 
 const GroupDetails = () => {
   const { chamaId } = useParams();
@@ -11,6 +12,7 @@ const GroupDetails = () => {
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [error, setError] = useState('');
+  const [meetingNotes, setMeetingNotes] = useState([]);
 
   const handleBack = () => {
     window.history.back();
@@ -23,31 +25,30 @@ const GroupDetails = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchGroupDetails = async () => {
-      try {
-        // Fetch group details
-        const groupRes = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}`);
+useEffect(() => {
+  const fetchGroupDetails = async () => {
+    try {
+      const [groupRes, rulesRes, membersRes, notesRes] = await Promise.all([
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}`),
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/rules`),
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/members`),
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/meetings?groupId=${chamaId}`)
+      ]);
 
-        // Fetch rules
-        const rulesRes = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/rules?group_id=${chamaId}`);
+      setGroup(groupRes.data);
+      setRules(rulesRes.data);
+      setMembers(membersRes.data);
+      setMeetingNotes(notesRes.data);
+    } catch (err) {
+      console.error('Error fetching group details:', err);
+      setError('Failed to load group details. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Fetch group members (already includes full_name, role, etc.)
-        const membersRes = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/members`);
-
-        setGroup(groupRes.data);
-        setRules(rulesRes.data);
-        setMembers(membersRes.data);
-      } catch (err) {
-        console.error('Error fetching group details:', err);
-        setError('Failed to load group details. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGroupDetails();
-  }, [chamaId]);
+  fetchGroupDetails();
+}, [chamaId]);
 
   if (loading) return <div className={styles.loading}>Loading group information...</div>;
   if (error) return <div className={styles.error}>{error}</div>;
@@ -103,6 +104,44 @@ const GroupDetails = () => {
           )}
         </div>
       </div>
+      <div className={styles.infoCard}>
+        <h3 className={styles.cardTitle}>Meeting Notes</h3>
+        {meetingNotes.length === 0 ? (
+          <p className={styles.noNotes}>No meeting notes uploaded yet.</p>
+        ) : (
+          <div className={styles.notesGrid}>
+            {meetingNotes.map(note => (
+              <div key={note.note_id} className={styles.noteCard}>
+                <div className={styles.noteHeader}>
+                  <h4 className={styles.noteTitle}>{note.title}</h4>
+                  <div className={styles.noteMeta}>
+                    <span className={styles.metaItem}>
+                      <FaCalendarAlt className={styles.metaIcon} />
+                      {new Date(note.uploaded_at).toLocaleDateString()}
+                    </span>
+                    <span className={styles.metaItem}>
+                      <FaUser className={styles.metaIcon} />
+                      {note.full_name}
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.noteContent}>
+                  <p className={styles.noteSummary}>{note.summary || 'No summary available'}</p>
+                  <a 
+                    href={note.file_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className={styles.downloadButton}
+                  >
+                    <FaDownload /> Download PDF
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
 
       <div className={styles.actions}>
         <button onClick={handleLeaveChama} className={styles.leaveButton}>

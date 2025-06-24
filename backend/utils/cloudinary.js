@@ -21,9 +21,15 @@ const pdfStorage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: 'stuchama/meeting_notes',
-    allowed_formats: ['pdf']
+    allowed_formats: ['pdf'],
+    resource_type: 'raw', // Important for PDF files
+    filename_override: (req, file) => {
+      const name = file.originalname.replace(/\.pdf$/, '');
+      return `${name}-${Date.now()}.pdf`; // ensures filename.pdf
+    }
   }
 });
+
 
 module.exports = {
   cloudinary,

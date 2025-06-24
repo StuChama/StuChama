@@ -57,7 +57,7 @@ const ChairpersonDashboard = () => {
       case 'GroupDetails':
         return <GroupDetails chamaId={chamaId} />;
       case 'GroupProgress':
-        return <GroupProgress chamaId={chamaId} />;
+        return <GroupProgress chamaId={chamaId} isChairperson={true} />;
       case 'FineManagement':
         return <FineManagement chamaId={chamaId} />;
       case 'MyFines':

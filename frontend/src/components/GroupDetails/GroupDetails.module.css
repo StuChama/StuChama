@@ -190,3 +190,96 @@
   transform: translateY(-3px);
   box-shadow: 0 6px 15px rgba(192, 57, 43, 0.35);
 }
+/* Add these new styles to your existing CSS */
+.noNotes {
+  text-align: center;
+  color: #777;
+  padding: 20px 0;
+}
+
+.notesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.noteCard {
+  background: #f8fafd;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(74, 144, 226, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.noteCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(74, 144, 226, 0.2);
+}
+
+.noteHeader {
+  padding: 15px;
+  background: linear-gradient(
+    135deg,
+    rgba(74, 144, 226, 0.1),
+    rgba(46, 204, 113, 0.1)
+  );
+  border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+}
+
+.noteTitle {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.noteMeta {
+  display: flex;
+  gap: 15px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #7f8c8d;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.metaIcon {
+  font-size: 0.8rem;
+  color: #4a90e2;
+}
+
+.noteContent {
+  padding: 15px;
+}
+
+.noteSummary {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+}
+
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #4a90e2;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.downloadButton:hover {
+  background: #3a70b0;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(74, 144, 226, 0.3);
+}

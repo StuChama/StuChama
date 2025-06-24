@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import GroupDetails from '../../components/GroupDetails/GroupDetails';
-import { useNavigate } from 'react-router-dom';
 import GroupProgress from '../../components/GroupProgress/GroupProgress';
 import MyFines from '../../components/MyFines/MyFines';
 import FineManagement from '../../components/FineManagement/FineManagement';
-import styles from './TreasurerDashboard.module.css';
-import { FaArrowLeft, FaSearch, FaDownload } from 'react-icons/fa';
 import UploadMeetingNotes from '../../components/UploadMeetingNotes/UploadMeetingNotes';
+import styles from './TreasurerDashboard.module.css';
 
-// Import icons
+import { FaArrowLeft, FaSearch, FaDownload } from 'react-icons/fa';
+
 import groupIcon from '../../assets/details (1).png';
 import progressIcon from '../../assets/roadmap (1).png';
 import reportIcon from '../../assets/payment-method.png';
@@ -34,7 +33,7 @@ const TreasurerDashboard = () => {
   useEffect(() => {
     const fetchGroup = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/groups/${chamaId}`);
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}`);
         const data = await res.json();
         setGroup(data);
       } catch (err) {
@@ -42,64 +41,46 @@ const TreasurerDashboard = () => {
       }
     };
 
-    
-    
-
     const fetchTransactions = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/transactions?group_id=${chamaId}`);
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/transactions?group_id=${chamaId}`);
         const data = await res.json();
-        setTransactions(data);
+
+        if (Array.isArray(data)) {
+          setTransactions(data);
+        } else {
+          console.error('Transactions response is not an array:', data);
+          setTransactions([]);
+        }
       } catch (err) {
         console.error('Error fetching transactions:', err);
+        setTransactions([]);
       }
     };
 
+    console.log('Fetching data for chamaId:', chamaId);
     fetchGroup();
     fetchTransactions();
   }, [chamaId]);
 
-  const filteredTransactions = transactions.filter(txn =>
-    txn.mpesa_code.toLowerCase().includes(searchCode.toLowerCase())
-  );
+  const filteredTransactions = Array.isArray(transactions)
+    ? transactions.filter(txn =>
+        txn?.mpesa_code?.toLowerCase().includes(searchCode.toLowerCase())
+      )
+    : [];
 
-   const logout = () => {
+  const logout = () => {
     clearToken();
     navigate('/');
   };
 
   const menuItems = [
-    {
-      tab: 'GroupDetails',
-      label: 'Group Details',
-      icon: groupIcon,
-    },
-    {
-      tab: 'GroupProgress',
-      label: 'Group Progress',
-      icon: progressIcon,
-    },
-    {
-      tab: 'TransactionReport',
-      label: 'Transaction Report',
-      icon: reportIcon,
-    },
-    {
-      tab: 'MyFines',
-      label: 'My Fines',
-      icon: myFinesIcon,
-    },
-    {
-      tab: 'FineManagement',
-      label: 'Fine Management',
-      icon: fineIcon,
-    },
-    {
-      tab: 'UploadMeetingNotes',
-      label: 'Upload Notes',
-      icon: meetingnotesIcon, // You can use a different icon specific to uploads
-    },
-
+    { tab: 'GroupDetails', label: 'Group Details', icon: groupIcon },
+    { tab: 'GroupProgress', label: 'Group Progress', icon: progressIcon },
+    { tab: 'TransactionReport', label: 'Transaction Report', icon: reportIcon },
+    { tab: 'MyFines', label: 'My Fines', icon: myFinesIcon },
+    { tab: 'FineManagement', label: 'Fine Management', icon: fineIcon },
+    { tab: 'UploadMeetingNotes', label: 'Upload Notes', icon: meetingnotesIcon },
   ];
 
   const renderContent = () => {
@@ -134,7 +115,7 @@ const TreasurerDashboard = () => {
                 <span>VERIFY</span>
               </div>
               {filteredTransactions.map(txn => (
-                <div key={txn.id} className={styles.transactionRow}>
+                <div key={txn.transaction_id} className={styles.transactionRow}>
                   <span>{txn.member_name}</span>
                   <span>{txn.mpesa_code}</span>
                   <span>KES {txn.amount}</span>
@@ -158,7 +139,6 @@ const TreasurerDashboard = () => {
   return (
     <div className={styles.dashboardContainer}>
       <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
-        {/* User Profile */}
         <div className={styles.userProfile}>
           <div className={styles.profileImage}>
             <img
@@ -167,7 +147,6 @@ const TreasurerDashboard = () => {
               className={styles.profileIcon}
             />
           </div>
-
           {!collapsed && currentUser && (
             <div className={styles.userInfo}>
               <h3 className={styles.userName}>{currentUser.full_name}</h3>
@@ -176,7 +155,6 @@ const TreasurerDashboard = () => {
           )}
         </div>
 
-        {/* Collapse Button */}
         <div className={styles.sidebarHeader}>
           <button
             className={styles.collapseBtn}
@@ -186,32 +164,24 @@ const TreasurerDashboard = () => {
           </button>
         </div>
 
-        {/* Menu Items */}
         <ul className={styles.sidebarMenu}>
           {menuItems.map(({ tab, label, icon }) => (
             <li
               key={tab}
-              className={`${styles.menuItem} ${
-                activeTab === tab ? styles.active : ''
-              }`}
+              className={`${styles.menuItem} ${activeTab === tab ? styles.active : ''}`}
               onClick={() => setActiveTab(tab)}
               onMouseEnter={() => setHoveredTab(tab)}
               onMouseLeave={() => setHoveredTab(null)}
               title={label}
             >
-              <img
-                src={icon}
-                alt={label}
-                className={styles.icon}
-              />
+              <img src={icon} alt={label} className={styles.icon} />
               {!collapsed && <span className={styles.label}>{label}</span>}
             </li>
           ))}
 
-          {/* Logout */}
           <li
             className={styles.menuItem}
-            onClick={() => (logout())}
+            onClick={logout}
             onMouseEnter={() => setHoveredTab('logout')}
             onMouseLeave={() => setHoveredTab(null)}
             title="Logout"

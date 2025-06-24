@@ -5,7 +5,8 @@ const multer = require('multer');
 const { pdfStorage } = require('../utils/cloudinary');
 const {
   uploadMeetingNoteController,
-  getMeetingNotesController
+  getMeetingNotesController,
+  deleteMeetingNoteController
 } = require('../controllers/meetingController');
 
 const upload = multer({ storage: pdfStorage });
@@ -15,5 +16,8 @@ router.post('/upload-note', upload.single('file'), uploadMeetingNoteController);
 
 // Get all notes for a specific group
 router.get('/', getMeetingNotesController);
+
+router.delete('/:noteId', deleteMeetingNoteController);
+
 
 module.exports = router;

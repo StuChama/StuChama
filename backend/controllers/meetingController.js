@@ -1,48 +1,85 @@
 // controllers/meetingController.js
-const db = require('../db/pool');
+const pool = require('../db/pool');
+const { cloudinary } = require('../utils/cloudinary');
 
 const uploadMeetingNoteController = async (req, res) => {
   try {
-    const fileUrl = req.file.path;
-    const { group_id, uploaded_by, title } = req.body;
+    const { title, group_id, uploaded_by } = req.body;
+    const file_url = req.file?.path;
+    const cloudinary_public_id = req.file?.filename; 
+    // console.log("File received:", req.file);
 
-    if (!group_id || !uploaded_by || !title || !fileUrl) {
-      return res.status(400).json({ message: 'All fields are required' });
+
+
+    if (!file_url || !title || !group_id || !uploaded_by || !cloudinary_public_id) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    await db.query(
-      'INSERT INTO meeting_notes (group_id, uploaded_by, title, file_url) VALUES ($1, $2, $3, $4)',
-      [group_id, uploaded_by, title, fileUrl]
-    );
+    const result = await pool.query(
+  `INSERT INTO meeting_notes (group_id, uploaded_by, title, file_url, cloudinary_public_id)
+   VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+  [group_id, uploaded_by, title, file_url, cloudinary_public_id]
+);
 
-    res.status(201).json({ message: 'File uploaded successfully', fileUrl });
+
+    res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error('Error uploading meeting note:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Upload meeting note error:', error);
+    res.status(500).json({ error: 'Failed to upload meeting note' });
   }
 };
 
 const getMeetingNotesController = async (req, res) => {
+  const { groupId } = req.query;
+
   try {
-    const { group_id } = req.query;
-
-    if (!group_id) {
-      return res.status(400).json({ message: 'Group ID is required' });
-    }
-
-    const result = await db.query(
-      'SELECT * FROM meeting_notes WHERE group_id = $1 ORDER BY uploaded_at DESC',
-      [group_id]
+    const result = await pool.query(
+      `SELECT mn.*, u.full_name 
+       FROM meeting_notes mn
+       JOIN users u ON mn.uploaded_by = u.user_id
+       WHERE mn.group_id = $1
+       ORDER BY mn.uploaded_at DESC`,
+      [groupId]
     );
 
-    res.status(200).json(result.rows);
+    res.json(result.rows);
   } catch (error) {
-    console.error('Error fetching meeting notes:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Get meeting notes error:', error);
+    res.status(500).json({ error: 'Failed to retrieve notes' });
   }
 };
 
+const deleteMeetingNoteController = async (req, res) => {
+  const { noteId } = req.params;
+
+  try {
+    const result = await pool.query(
+      'SELECT cloudinary_public_id FROM meeting_notes WHERE note_id = $1',
+      [noteId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Note not found' });
+    }
+
+    const publicId = result.rows[0].cloudinary_public_id;
+
+    // Delete from Cloudinary
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+    }
+
+    // Delete from DB
+    await pool.query('DELETE FROM meeting_notes WHERE note_id = $1', [noteId]);
+
+    res.json({ message: 'Meeting note deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting meeting note:', err);
+    res.status(500).json({ error: 'Failed to delete meeting note' });
+  }
+};
 module.exports = {
   uploadMeetingNoteController,
-  getMeetingNotesController
+  getMeetingNotesController,
+  deleteMeetingNoteController
 };

@@ -34,10 +34,12 @@ const getChamaContributions = async (req, res) => {
     let contributions;
     if (user_id) {
       // Get specific user's contributions to a goal
-      contributions = await ChamaModel.getUserContributionsToGoal(goal_id, user_id);
+      contributions = await ChairpersonChamaModel.getAllContributionsToGoal(goal_id, user_id);
+
     } else {
       // Get all contributions to a goal
-      contributions = await ChamaModel.getAllContributionsToGoal(goal_id);
+      contributions = await ChairpersonChamaModel.getAllContributionsToGoal(goal_id);
+
     }
 
     res.json(contributions);
@@ -74,6 +76,23 @@ const getChamaFines = async (req, res) => {
   }
 };
 
+const getUserFines = async (req, res) => {
+  const group_id = req.params.groupId; // Get group_id from route params
+  const { user_id, status } = req.query;
+
+  if (!user_id || !group_id) {
+    return res.status(400).json({ error: 'Missing user_id or group_id' });
+  }
+
+  try {
+    const fines = await ChairpersonChamaModel.getFinesByUser(user_id, group_id, status);
+    res.json(fines);
+  } catch (err) {
+    console.error('Error fetching user fines:', err);
+    res.status(500).json({ error: 'Failed to fetch fines' });
+  }
+};
+
 const getAllGroups = async (req, res) => {
   try {
     const groups = await ChairpersonChamaModel.getAllChamas();
@@ -84,26 +103,134 @@ const getAllGroups = async (req, res) => {
 };
 
 const addFine = async (req, res) => {
-  const { memberId, amount, reason, due_date } = req.body;
+  const { user_id, amount, reason, status = 'Unpaid' } = req.body;
+
+  if (!user_id || !amount || !reason) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
   try {
     const newFine = await ChairpersonChamaModel.addFine(
       req.params.groupId,
-      memberId,
-      { amount, reason, due_date }
+      user_id,
+      { amount, reason, status }
     );
     res.status(201).json(newFine);
   } catch (error) {
+    console.error('Error adding fine:', error);
     res.status(500).json({ error: 'Failed to add fine' });
   }
 };
 
-const getChamaRules = async (req, res) => {
+// chamaController.js
+const updateFineStatus = async (req, res) => {
+  const { fineId } = req.params;
+  const { status } = req.body;
   try {
-    const groupId = req.query.group_id; // 👈 pull from query params
-    const rules = await ChairpersonChamaModel.getChamaRules(groupId);
-    res.json(rules);
+    const result = await pool.query(
+      `UPDATE fines SET status = $1 WHERE fine_id = $2 RETURNING *`,
+      [status, fineId]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const updateFineDetails = async (req, res) => {
+  const { fineId } = req.params;
+  const { amount, reason, status } = req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE fines SET amount = $1, reason = $2, status = $3 WHERE fine_id = $4 RETURNING *`,
+      [amount, reason, status, fineId]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const deleteFine = async (req, res) => {
+  const { fineId } = req.params;
+  try {
+    await pool.query(`DELETE FROM fines WHERE fine_id = $1`, [fineId]);
+    res.status(204).end();
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+const getChamaRules = async (req, res) => {
+  const { groupId } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT * FROM rules WHERE group_id = $1 ORDER BY created_at ASC`,
+      [groupId]
+    );
+
+    res.json(result.rows);
   } catch (error) {
+    console.error('Error fetching rules:', error);
     res.status(500).json({ error: 'Failed to fetch rules' });
+  }
+};
+
+
+const addChamaRule = async (req, res) => {
+  const { groupId } = req.params;
+  const { rule_description, created_by } = req.body;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO rules (group_id, rule_description, created_by, created_at)
+       VALUES ($1, $2, $3, NOW()) RETURNING *`,
+      [groupId, rule_description, created_by]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error adding rule:', error);
+    res.status(500).json({ error: 'Failed to add rule' });
+  }
+};
+
+const updateChamaRule = async (req, res) => {
+  const { ruleId } = req.params;
+  const { rule_description } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE rules SET rule_description = $1 WHERE rule_id = $2 RETURNING *`,
+      [rule_description, ruleId]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating rule:', error);
+    res.status(500).json({ error: 'Failed to update rule' });
+  }
+};
+
+const deleteChamaRule = async (req, res) => {
+  const { ruleId } = req.params;
+
+  try {
+    const result = await pool.query(
+      'DELETE FROM rules WHERE rule_id = $1 RETURNING *',
+      [ruleId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Rule not found' });
+    }
+
+    res.status(200).json({ message: 'Rule deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting rule:', err.message);
+    res.status(500).json({ error: 'Server error while deleting rule' });
   }
 };
 
@@ -144,7 +271,7 @@ const removeMember = async (req, res) => {
   }
 };
 
-// === MEMBER CONTROLLERS ===
+
 const getMemberGroupDetails = async (req, res) => {
   try {
     const group = await MemberChamaModel.getGroupDetails(req.params.groupId);
@@ -175,7 +302,7 @@ const getMemberFines = async (req, res) => {
   }
 };
 
-// === TREASURER CONTROLLER ===
+
 const getTransactions = async (req, res) => {
   const { group_id } = req.query;
   try {
@@ -261,15 +388,23 @@ module.exports = {
   updateMemberRole,
   removeMember,
   getChamaGoals,
+  updateFineStatus,
+  updateFineDetails,
+  deleteFine,
+  getUserFines,
+
   getUserChamas,
   getChamaFines,
   getUserMembership,
   getChamaContributions,
-  getChamaRules,
+  
   addFine,
   createChama,
   joinChama,
   getChamaRules,
+  addChamaRule,
+  updateChamaRule,
+  deleteChamaRule,
   getMemberGroupDetails,
   getGroupProgress,
   getMemberFines,

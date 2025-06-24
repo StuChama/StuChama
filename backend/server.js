@@ -4,8 +4,10 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth'); // Handles signup & login
-const userRoutes = require('./routes/users'); // NEW LINE
-const chamaRoutes = require('./routes/ChamaRoutes');
+const userRoutes = require('./routes/users'); // Handles user profile & search
+const chamaRoutes = require('./routes/ChamaRoutes'); // Handles chama management
+const meetingRoutes = require('./routes/meetings'); // Handles meetings
+const mpesaRoutes = require('./routes/mpesaRoutes'); // Handles M-Pesa integration
 
 const pool = require('./db/pool'); // Ensure your db.js exports the pool
 
@@ -17,8 +19,10 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes); // NEW LINE
+app.use('/api/users', userRoutes);
 app.use('/api/chamas', chamaRoutes);
+app.use('/api/meetings', meetingRoutes);
+app.use('/api/mpesa', mpesaRoutes);
 
 
 // Root endpoint (optional for testing)
@@ -31,8 +35,10 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
+
 // Start server
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, async () => {
   try {
     // Test DB connection

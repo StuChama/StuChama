@@ -152,3 +152,130 @@
   color: #c0392b;
   border: 1px solid rgba(231, 76, 60, 0.3);
 }
+/* Add to the bottom of your CSS file */
+.notesList {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(74, 144, 226, 0.1);
+}
+
+.notesTitle {
+  color: var(--dark-gray);
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+}
+
+.noteItem {
+  display: flex;
+  align-items: center;
+  background: rgba(245, 249, 255, 0.5);
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 8px rgba(74, 144, 226, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(74, 144, 226, 0.1);
+}
+
+.noteItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(74, 144, 226, 0.15);
+}
+
+.noteTitle {
+  flex: 1;
+  font-weight: 500;
+  color: var(--dark-gray);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 15px;
+}
+
+.editInput {
+  flex: 1;
+  padding: 8px 15px;
+  border-radius: 30px;
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  font-size: 1rem;
+  margin-right: 15px;
+}
+
+.editInput:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.downloadLink {
+  background: var(--primary-blue);
+  color: white !important;
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(74, 144, 226, 0.25);
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.downloadLink:hover {
+  background: #2a7bc8;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(74, 144, 226, 0.3);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.editBtn,
+.saveBtn,
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.editBtn {
+  background: linear-gradient(135deg, #4a90e2, #2a7bc8);
+  color: white;
+}
+
+.saveBtn {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: white;
+}
+
+.deleteBtn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.editBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 8px rgba(74, 144, 226, 0.3);
+}
+
+.saveBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 8px rgba(46, 204, 113, 0.3);
+}
+
+.deleteBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3);
+}

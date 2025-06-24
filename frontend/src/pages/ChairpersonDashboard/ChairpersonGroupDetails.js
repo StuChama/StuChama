@@ -215,8 +215,7 @@ const ChairpersonGroupDetails = ({ chamaId }) => {
         )}
 
         <div className={styles.memberGrid}>
-          {console.log("Members:", members)}
-          {console.log("Members missing name:", members.filter(m => !m.name))}
+          
 
           {members.map((member) => (
             <div key={member.user_id} className={styles.memberCard}>
