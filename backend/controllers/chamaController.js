@@ -1,5 +1,6 @@
 const pool = require('../db/pool');
 
+
 // === controllers/chamaController.js ===
 const ChairpersonChamaModel = require('../models/ChairpersonChamaModel');
 const MemberChamaModel = require('../models/MemberChamaModel');
@@ -370,15 +371,66 @@ const getUserMembership = async (req, res) => {
 
 // Join chama controller
 const joinChama = async (req, res) => {
+  const { group_id, group_code, user_id } = req.body;
+
+  // 1) Find the group by ID or Code
+  let queryText;
+  let params;
+  if (group_id) {
+    queryText = 'SELECT group_id, membership_open FROM groups WHERE group_id = $1';
+    params    = [group_id];
+  } else if (group_code) {
+    queryText = 'SELECT group_id, membership_open FROM groups WHERE group_code = $1';
+    params    = [group_code];
+  } else {
+    return res.status(400).json({ message: 'Missing group identifier.' });
+  }
+
+  const { rows: groups } = await pool.query(queryText, params);
+  if (groups.length === 0) {
+    return res.status(404).json({ message: 'Group not found.' });
+  }
+
+  const group = groups[0];
+  // 2) Enforce membership_open
+  if (!group.membership_open) {
+    return res
+      .status(403)
+      .json({ message: 'This group is closed for new members.' });
+  }
+
+  // 3) Insert into group_members
   try {
-    const { user_id, group_id, role } = req.body;
-    const membership = await ChairpersonChamaModel.addMemberToChama({ user_id, group_id, role });
-    res.status(201).json(membership);
-  } catch (error) {
-    console.error('Join chama error:', error);
-    res.status(500).json({ error: 'Failed to join chama' });
+    await pool.query(
+      `INSERT INTO group_members (user_id, group_id, role)
+         VALUES ($1, $2, 'Member')`,
+      [user_id, group.group_id]
+    );
+    return res.status(200).json({ message: 'Joined successfully!' });
+  } catch (err) {
+    console.error('Error adding member:', err);
+    return res.status(500).json({ message: 'Error joining group.' });
   }
 };
+const getPaymentSchedule = async (req, res) => {
+  try {
+    const { group_id } = req.params;
+    const result = await pool.query(
+      `SELECT schedule_id,
+              installment_no,
+              to_char(due_date, 'YYYY-MM-DD') AS due_date,
+              amount_per_member
+         FROM payment_schedule
+        WHERE group_id = $1
+        ORDER BY installment_no`,
+      [group_id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching schedule:', err);
+    res.status(500).json({ message: 'Failed to load payment schedule.' });
+  }
+}
 
 module.exports = {
   getChamaGoals,
@@ -409,5 +461,6 @@ module.exports = {
   getGroupProgress,
   getMemberFines,
   getTransactions,
+  getPaymentSchedule,
   getUserNotifications,
 };

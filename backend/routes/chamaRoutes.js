@@ -32,6 +32,7 @@ const {
 } = require('../controllers/chamaController');
 
 const goalController = require('../controllers/goalController');
+const controller = require('../controllers/chamaController');
 
 // === CHAIRPERSON ROUTES ===
 router.get('/groups/goals', getChamaGoals);
@@ -86,7 +87,10 @@ router.get('/groups/:groupId/members/:userId', getUserMembership);
 
 router.get('/groups/:groupId', getChamaById);
 
-
+router.get(
+  '/groups/:group_id/schedule',
+  controller.getPaymentSchedule
+);
 
 
 

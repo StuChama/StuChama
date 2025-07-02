@@ -41,6 +41,38 @@ export const joinGroup = async (membershipData) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(membershipData),
   });
-  if (!res.ok) throw new Error('Failed to join group');
+
+  if (!res.ok) {
+    // Try to read the backend’s JSON error message
+    let backendMsg = '';
+    try {
+      const errData = await res.json();
+      backendMsg = errData.message || '';
+    } catch (e) {
+      // ignore parse errors
+    }
+    const msg = backendMsg
+      ? `Could not join Chama: ${backendMsg}`
+      : 'Could not join Chama: Unknown error';
+    throw new Error(msg);
+  }
+
   return await res.json();
+};
+
+export const getPaymentSchedule = async (groupId) => {
+  const res = await fetch(`${BASE_URL}/api/chamas/groups/${groupId}/schedule`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Could not load schedule');
+  }
+  
+
+  const data = await res.json();
+  // map amount_per_member from string → number
+  return data.map(slot => ({
+    ...slot,
+    amount_per_member: parseFloat(slot.amount_per_member),
+    installment_no:    Number(slot.installment_no),
+  }));
 };
