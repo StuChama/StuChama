@@ -91,21 +91,87 @@ const createGoal = async (req, res) => {
 };
 
 const updateGoal = async (req, res) => {
-  const { goalId } = req.params;
-  const { target_amount, deadline } = req.body;
+  // 1️⃣ Use the same param name as in your route
+  const goalId = req.params.goalId;
+  const { goal_name, target_amount, deadline } = req.body;
 
   try {
-    const result = await pool.query(
-      `UPDATE goals SET target_amount = $1, deadline = $2 WHERE goal_id = $3 RETURNING *`,
-      [target_amount, deadline, goalId]
+    // 2️⃣ Update the goal row
+    const updateRes = await pool.query(
+      `UPDATE goals
+          SET goal_name     = $1,
+              target_amount = $2,
+              deadline      = $3
+        WHERE goal_id = $4
+        RETURNING *`,
+      [goal_name, target_amount, deadline, goalId]
     );
-    res.json(result.rows[0]);
+
+    // 3️⃣ If nothing was updated, the ID was wrong
+    if (updateRes.rowCount === 0) {
+      return res.status(404).json({ message: 'Goal not found' });
+    }
+    const updatedGoal = updateRes.rows[0];
+
+    // 4️⃣ Delete old slots
+    await pool.query(
+      `DELETE FROM payment_schedule
+        WHERE goal_id = $1`,
+      [goalId]
+    );
+
+    // 5️⃣ Recompute slots
+    const startDate = new Date(updatedGoal.created_at);
+    const endDate   = new Date(updatedGoal.deadline);
+    const diffDays  = (endDate - startDate) / (1000 * 60 * 60 * 24);
+
+    let periodicity = diffDays >= 90
+      ? 'monthly'
+      : diffDays >= 30
+        ? 'weekly'
+        : 'daily';
+
+    const memberRes = await pool.query(
+      `SELECT COUNT(*) AS cnt
+         FROM group_members
+        WHERE group_id = $1`,
+      [updatedGoal.group_id]
+    );
+    const memberCount = parseInt(memberRes.rows[0].cnt, 10) || 1;
+
+    const plan = computeInstallments({
+      startDate,
+      deadline: endDate,
+      periodicity,
+      totalGoal: parseFloat(updatedGoal.target_amount),
+      memberCount
+    });
+
+    // 6️⃣ Insert new slots
+    const insertText = `
+      INSERT INTO payment_schedule
+        (goal_id, group_id, installment_no, due_date, amount_per_member)
+      VALUES ($1, $2, $3, $4, $5)
+    `;
+    for (let i = 0; i < plan.length; i++) {
+      const { dueDate, memberAmount } = plan[i];
+      await pool.query(insertText, [
+        updatedGoal.goal_id,
+        updatedGoal.group_id,
+        i + 1,
+        dueDate,
+        memberAmount
+      ]);
+    }
+
+    // 7️⃣ Respond with the updated goal
+    res.json(updatedGoal);
+
   } catch (err) {
-    console.error('Update goal error:', err);
-    res.status(500).json({ error: 'Failed to update goal' });
+    console.error('Error updating goal and schedule:', err);
+    res.status(500).json({ message: 'Failed to update goal' });
   }
 };
-
 const deleteGoal = async (req, res) => {
   const { goalId } = req.params;
 

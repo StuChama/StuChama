@@ -1,4 +1,5 @@
-// ContributionButton.js (updated)
+// src/components/ContributionButton/ContributionButton.js
+
 import React, { useState, useContext } from 'react';
 import styles from './ContributionButton.module.css';
 import { UserContext } from '../../context/UserContext';
@@ -6,33 +7,51 @@ import { UserContext } from '../../context/UserContext';
 const ContributionButton = ({ onClose, groupId, goalId, amount, fineId }) => {
   const { currentUser } = useContext(UserContext);
   const [mpesaAmount, setMpesaAmount] = useState(amount || '');
-  const [paybillCode, setPaybillCode] = useState('');
-  const [showMpesa, setShowMpesa] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState('');       // 'Pending' | 'Success' | 'Failed'
+  const [error, setError]   = useState('');
 
+  // Polling helper for querying M-Pesa status
+  const checkStatus = async (checkoutId) => {
+    const res = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/api/mpesa/query`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ checkoutRequestID: checkoutId })
+      }
+    );
+    if (!res.ok) throw new Error('Failed to query payment status');
+    const { status, message } = await res.json();
+    return { status, message };
+  };
+
+  // Update the fine(s) in your system
   const markFineAsPaid = async () => {
-    try {
-      if (fineId === 'all') {
-        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/member/groups/${groupId}/fines`, {
-          params: { user_id: currentUser.user_id, status: 'Unpaid' }
-        });
-        const fines = await res.json();
-        for (const fine of fines) {
-          await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/fines/${fine.fine_id}`, {
+    if (fineId === 'all') {
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/chamas/member/groups/${groupId}/fines?user_id=${currentUser.user_id}&status=Unpaid`
+      );
+      const fines = await res.json();
+      for (const fine of fines) {
+        await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/api/chamas/fines/${fine.fine_id}`,
+          {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: 'Paid' })
-          });
-        }
-      } else if (fineId) {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/fines/${fineId}`, {
+          }
+        );
+      }
+    } else if (fineId) {
+      await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/chamas/fines/${fineId}`,
+        {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'Paid' })
-        });
-      }
-    } catch (err) {
-      console.error('Failed to update fine status:', err);
+        }
+      );
     }
   };
 
@@ -41,46 +60,67 @@ const ContributionButton = ({ onClose, groupId, goalId, amount, fineId }) => {
       alert("No phone number found. Please update your profile.");
       return;
     }
+    setIsSubmitting(true);
+    setError('');
+    setStatus('');
 
     try {
-      setIsSubmitting(true);
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/mpesa/stk-push`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          phone: currentUser.phone_number,
-          amount: mpesaAmount,
-          user_id: currentUser.user_id,
-          group_id: groupId,
-          goal_id: goalId || null,
-          fine_id: fineId || null, 
-          group_name: currentUser.group_name || 'Chama Group',
-        })
-      });
+      // 1) Initiate STK Push
+      const pushRes = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/mpesa/stk-push`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: currentUser.phone_number,
+            amount: mpesaAmount,
+            user_id: currentUser.user_id,
+            group_id: groupId,
+            goal_id: goalId || null,
+            fine_id: fineId || null
+          })
+        }
+      );
 
-      const data = await res.json();
-      if (res.ok) {
-        alert(`STK Push sent. Check your phone to pay KES ${mpesaAmount}.`);
-        await markFineAsPaid();
-      } else {
-        alert(`STK Push failed. ${data.error || 'Please ensure you are using a Safaricom line.'}`);
+      const pushData = await pushRes.json();
+      if (!pushRes.ok) {
+        throw new Error(pushData.error || 'Failed to initiate STK Push');
       }
-    } catch (err) {
-      console.error(err);
-      alert('STK Push failed. Please try again later.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
-  const handlePaybillSubmit = async () => {
-    try {
-      setIsSubmitting(true);
-      await new Promise((res) => setTimeout(res, 1500));
-      alert(`M-Pesa code ${paybillCode} submitted for confirmation.`);
-      await markFineAsPaid();
+      const { CheckoutRequestID } = pushData;
+      setStatus('Pending');
+      alert(`STK Push sent. Please enter your PIN to pay KES ${mpesaAmount}.`);
+
+      // 2) Poll until no longer Pending
+      let result;
+      do {
+        await new Promise(r => setTimeout(r, 5000)); // wait 5s
+        try {
+          result = await checkStatus(CheckoutRequestID);
+        } catch (pollErr) {
+          console.error('Status poll error:', pollErr);
+          // you might choose to break or retry
+          continue;
+        }
+        setStatus(result.status);
+      } while (result.status === 'Pending');
+
+      // 3) Handle final status
+      if (result.status === 'Success') {
+        alert('Payment successful!');
+        if (fineId) {
+          await markFineAsPaid();
+        } else {
+          // if you want to refresh contributions you could call a prop callback here
+        }
+        onClose();
+      } else {
+        alert(`Payment failed: ${result.message || 'Please try again.'}`);
+      }
+
     } catch (err) {
-      console.error('Paybill submit failed:', err);
+      console.error('STK Push error:', err);
+      setError(err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -90,42 +130,40 @@ const ContributionButton = ({ onClose, groupId, goalId, amount, fineId }) => {
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
-          <h2 className={styles.title}>Contribution Methods</h2>
+          <h2 className={styles.title}>Pay via M-Pesa</h2>
           <button className={styles.closeButton} onClick={onClose}>&times;</button>
         </div>
 
-        <div className={styles.tabs}>
-          <button className={`${styles.tabButton} ${showMpesa ? styles.activeTab : ''}`} onClick={() => setShowMpesa(true)}>Auto M-Pesa</button>
-          <button className={`${styles.tabButton} ${!showMpesa ? styles.activeTab : ''}`} onClick={() => setShowMpesa(false)}>Paybill</button>
+        <div className={styles.paymentSection}>
+          <div className={styles.inputGroup}>
+            <label>Enter Amount (KES)</label>
+            <input
+              type="number"
+              value={mpesaAmount}
+              onChange={(e) => setMpesaAmount(e.target.value)}
+              className={styles.inputField}
+            />
+          </div>
+
+          <button
+            className={styles.actionButton}
+            onClick={handleMpesaSubmit}
+            disabled={isSubmitting || !mpesaAmount}
+          >
+            {isSubmitting ? 'Processing…' : 'PAY VIA M-PESA'}
+          </button>
+
+          {status && (
+            <p className={styles.statusText}>
+              Status: <strong>{status}</strong>
+            </p>
+          )}
+          {error && (
+            <p className={styles.errorText}>
+              Error: {error}
+            </p>
+          )}
         </div>
-
-        {showMpesa ? (
-          <div className={styles.paymentSection}>
-            <div className={styles.inputGroup}>
-              <label>Enter Amount (KES)</label>
-              <input type="number" value={mpesaAmount} onChange={(e) => setMpesaAmount(e.target.value)} className={styles.inputField} />
-            </div>
-            <button className={`${styles.actionButton} ${styles.payButton}`} onClick={handleMpesaSubmit} disabled={isSubmitting || !mpesaAmount}>
-              {isSubmitting ? 'Processing...' : 'PAY VIA M-PESA'}
-            </button>
-          </div>
-        ) : (
-          <div className={styles.paymentSection}>
-            <div className={styles.staticInfo}>
-              <div className={styles.staticField}><span className={styles.fieldLabel}>Paybill:</span> <span className={styles.fieldValue}>123456</span></div>
-              <div className={styles.staticField}><span className={styles.fieldLabel}>Account No:</span> <span className={styles.fieldValue}>{groupId}</span></div>
-            </div>
-            <div className={styles.inputGroup}>
-              <label>Enter M-Pesa Code</label>
-              <input type="text" value={paybillCode} onChange={(e) => setPaybillCode(e.target.value)} className={styles.inputField} />
-            </div>
-            <button className={`${styles.actionButton} ${styles.submitButton}`} onClick={handlePaybillSubmit} disabled={isSubmitting || !paybillCode}>
-              {isSubmitting ? 'Verifying...' : 'SUBMIT PAYMENT'}
-            </button>
-          </div>
-        )}
-
-        <div className={styles.infoNote}><p>Transactions may take 1–2 minutes to process</p></div>
       </div>
     </div>
   );
