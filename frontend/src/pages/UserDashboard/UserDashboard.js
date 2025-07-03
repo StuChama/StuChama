@@ -22,6 +22,9 @@ const UserDashboard = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
   const [editedUser, setEditedUser] = useState({
     full_name: '',
     email: '',
@@ -236,43 +239,84 @@ const UserDashboard = () => {
               </div>
 
               <div className={styles.uploadCard}>
-                <h3 className={styles.uploadTitle}>Update Profile Picture</h3>
-                <p className={styles.uploadSubtitle}>Upload a JPEG, PNG, or GIF file (max 2MB)</p>
-                <form className={styles.uploadForm} onSubmit={async (e) => {
-                  e.preventDefault();
-                  const formData = new FormData();
-                  formData.append('profile_picture', e.target.profile_picture.files[0]);
-                  try {
-                    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/${currentUser.user_id}/profile-picture`, {
-                      method: 'PUT',
-                      body: formData
-                    });
-                    if (res.ok) {
-                      alert('Profile picture updated successfully!');
-                      window.location.reload();
-                    } else {
-                      alert('Upload failed. Please try again.');
-                    }
-                  } catch (err) {
-                    alert('Something went wrong. Please try again.');
-                  }
-                }}>
-                  <div className={styles.uploadArea}>
-                    <label htmlFor="profile_picture" className={styles.uploadLabel}>
-                      <div className={styles.uploadIcon}>📁</div>
-                      <div className={styles.uploadText}>
-                        <span className={styles.browseText}>Click to browse</span>
-                        <span className={styles.dragText}>or drag & drop files</span>
-                      </div>
-                    </label>
-                    <input type="file" name="profile_picture" id="profile_picture" accept="image/*" className={styles.uploadInput} required />
-                  </div>
-                  <div className={styles.uploadActions}>
-                    <button type="submit" className={styles.uploadButton}>Upload Image</button>
-                    <button type="button" className={styles.cancelButton} onClick={() => document.getElementById('profile_picture').value = ''}>Cancel</button>
-                  </div>
-                </form>
-              </div>
+  <h3 className={styles.uploadTitle}>Update Profile Picture</h3>
+  <p className={styles.uploadSubtitle}>Upload a JPEG, PNG, or GIF file (max 2MB)</p>
+
+  <form
+    className={styles.uploadForm}
+    onSubmit={async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('profile_picture', selectedFile);
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/api/users/${currentUser.user_id}/profile-picture`,
+          {
+            method: 'PUT',
+            body: formData
+          }
+        );
+        if (res.ok) {
+          alert('Profile picture updated successfully!');
+          setPreviewUrl(null);
+          window.location.reload();
+        } else {
+          alert('Upload failed. Please try again.');
+        }
+      } catch (err) {
+        alert('Something went wrong. Please try again.');
+      }
+    }}
+  >
+    <div className={styles.uploadArea}>
+      <label htmlFor="profile_picture" className={styles.uploadLabel}>
+        <div className={styles.uploadIcon}>📁</div>
+        <div className={styles.uploadText}>
+          <span className={styles.browseText}>Click to browse</span>
+          
+        </div>
+      </label>
+      <input
+        type="file"
+        name="profile_picture"
+        id="profile_picture"
+        accept="image/*"
+        className={styles.uploadInput}
+        required
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file) {
+            setSelectedFile(file);
+            setPreviewUrl(URL.createObjectURL(file));
+          }
+        }}
+      />
+    </div>
+
+    {previewUrl && (
+      <div className={styles.previewContainer}>
+        <p className={styles.previewLabel}>Image Preview:</p>
+        <img src={previewUrl} alt="Preview" className={styles.previewImage} />
+      </div>
+    )}
+
+    <div className={styles.uploadActions}>
+      <button type="submit" className={styles.uploadButton}>Upload Image</button>
+      <button
+        type="button"
+        className={styles.cancelButton}
+        onClick={() => {
+          setSelectedFile(null);
+          setPreviewUrl(null);
+          document.getElementById('profile_picture').value = '';
+        }}
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>
+
             </div>
           )}
         </main>

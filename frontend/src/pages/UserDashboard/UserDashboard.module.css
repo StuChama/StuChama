@@ -520,3 +520,22 @@
   background: #e8f4ff;
   transform: translateY(-3px);
 }
+
+.previewContainer {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.previewLabel {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.previewImage {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #910510;
+}
