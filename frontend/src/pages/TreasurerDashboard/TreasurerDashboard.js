@@ -45,33 +45,42 @@ const TreasurerDashboard = () => {
       try {
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/transactions?group_id=${chamaId}`);
         const data = await res.json();
-
-        if (Array.isArray(data)) {
-          setTransactions(data);
-        } else {
-          console.error('Transactions response is not an array:', data);
-          setTransactions([]);
-        }
+        setTransactions(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Error fetching transactions:', err);
         setTransactions([]);
       }
     };
 
-    console.log('Fetching data for chamaId:', chamaId);
     fetchGroup();
     fetchTransactions();
   }, [chamaId]);
 
-  const filteredTransactions = Array.isArray(transactions)
-    ? transactions.filter(txn =>
-        txn?.mpesa_code?.toLowerCase().includes(searchCode.toLowerCase())
-      )
-    : [];
+  const filteredTransactions = transactions.filter(txn =>
+    txn?.mpesa_code?.toLowerCase().includes(searchCode.toLowerCase())
+  );
 
   const logout = () => {
     clearToken();
     navigate('/');
+  };
+
+  const downloadCSVReport = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reports/transactions/pdf?group_id=${chamaId}`);
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'transactions_report.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error('Failed to download report:', err);
+      alert('Failed to download transaction report');
+    }
   };
 
   const menuItems = [
@@ -112,14 +121,14 @@ const TreasurerDashboard = () => {
                 <span>MEMBER</span>
                 <span>MPESA CODE</span>
                 <span>AMOUNT PAID</span>
-                <span>VERIFY</span>
+                <span>STATUS</span>
               </div>
               {filteredTransactions.map(txn => (
                 <div key={txn.transaction_id} className={styles.transactionRow}>
-                  <span>{txn.member_name}</span>
+                  <span>{txn.member_name || txn.user_id}</span>
                   <span>{txn.mpesa_code}</span>
                   <span>KES {txn.amount}</span>
-                  <span className={styles.verifyIcon}>✔️</span>
+                  <span>{txn.status}</span>
                 </div>
               ))}
             </div>
@@ -203,7 +212,7 @@ const TreasurerDashboard = () => {
             <button className={styles.iconButton} onClick={() => window.history.back()}>
               <FaArrowLeft />
             </button>
-            <button className={styles.downloadButton}>
+            <button className={styles.downloadButton} onClick={downloadCSVReport}>
               <FaDownload /> Download Report
             </button>
           </div>

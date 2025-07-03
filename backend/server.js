@@ -5,10 +5,10 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth'); // Handles signup & login
 const userRoutes = require('./routes/users'); // Handles user profile & search
-const chamaRoutes = require('./routes/ChamaRoutes'); // Handles chama management
+const chamaRoutes = require('./routes/chamaRoutes'); // Handles chama management
 const meetingRoutes = require('./routes/meetings'); // Handles meetings
 const mpesaRoutes = require('./routes/mpesaRoutes'); // Handles M-Pesa integration
-
+const reportRoutes = require('./routes/reportRoutes');
 const pool = require('./db/pool'); // Ensure your db.js exports the pool
 
 const app = express();
@@ -23,6 +23,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/chamas', chamaRoutes);
 app.use('/api/meetings', meetingRoutes);
 app.use('/api/mpesa', mpesaRoutes);
+app.use('/api/reports', reportRoutes);
 
 
 // Root endpoint (optional for testing)

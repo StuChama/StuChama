@@ -88,7 +88,15 @@ exports.stkPush = async (req, res) => {
       `INSERT INTO transactions
          (user_id, group_id, goal_id, fine_id, mpesa_code, amount, status)
        VALUES ($1,$2,$3,$4,$5,$6,'Pending')`,
-      [user_id, group_id, goal_id || null, fine_id || null, CheckoutRequestID, parsedAmount]
+      [
+  user_id,
+  group_id,
+  goal_id !== undefined ? goal_id : null,
+  fine_id !== undefined ? fine_id : null,
+  CheckoutRequestID,
+  parsedAmount
+]
+
     );
 
     // Return the M-Pesa push response back to frontend
@@ -100,7 +108,7 @@ exports.stkPush = async (req, res) => {
     });
   } catch (err) {
     console.error('[STK PUSH ERROR]', err.response?.data || err.message);
-    return res.status(500).json({ error: 'Failed to initiate STK Push' });
+    return res.status(500).json({ error: '' });
   }
 };
 
@@ -214,16 +222,15 @@ exports.queryPaymentStatus = async (req, res) => {
     const resultCode = Number(data.ResultCode);
     const status     = resultCode === 0 ? 'Success' : 'Failed';
 
-    // Update the transaction status
+    // Update the transaction status in your DB
     await pool.query(
       `UPDATE transactions
-          SET status = $1,
-              transaction_date = NOW()
+          SET status = $1, transaction_date = NOW()
         WHERE mpesa_code = $2`,
       [status, checkoutRequestID]
     );
 
-    // On success, insert into contributions or mark fines
+    // On success, insert contribution / mark fines
     if (status === 'Success') {
       const txRes = await pool.query(
         `SELECT user_id, group_id, goal_id, fine_id, amount
@@ -247,13 +254,26 @@ exports.queryPaymentStatus = async (req, res) => {
       }
     }
 
+    // Finally, respond to the caller
     return res.json({
       message:    data.ResultDesc,
       resultCode: data.ResultCode,
       status
     });
+
   } catch (err) {
-    console.error('[STK PUSH QUERY ERROR]', err.response?.data || err.message);
-    return res.status(502).json({ error: 'Failed to query payment status' });
+    // If M-Pesa tells us "transaction is being processed", treat it as Pending
+    const errData = err.response?.data;
+    if (errData?.errorCode === '500.001.1001') {
+      return res.json({
+        status:  'Pending',
+        message: errData.errorMessage || 'Transaction is still processing'
+      });
+    }
+
+    console.error('[STK PUSH QUERY ERROR]', errData || err.message);
+    return res
+      .status(502)
+      .json({ error: 'Failed to query payment status', details: err.message });
   }
 };

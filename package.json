@@ -20,6 +20,8 @@
   "homepage": "https://github.com/StuChama/StuChama#readme",
   "dependencies": {
     "cloudinary": "^1.41.3",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "multer": "^2.0.1",
     "multer-storage-cloudinary": "^4.0.0",
     "react-icons": "^5.5.0"

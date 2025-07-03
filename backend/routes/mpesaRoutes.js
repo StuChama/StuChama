@@ -9,4 +9,5 @@ router.post('/stk-push', mpesaController.stkPush);
 router.post('/callback', mpesaController.mpesaCallback);
 router.post('/query',     mpesaController.queryPaymentStatus);
 
+
 module.exports = router;
