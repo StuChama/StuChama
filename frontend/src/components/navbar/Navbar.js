@@ -1,5 +1,5 @@
 // Navbar.js
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import styles from './navbar.module.css';
@@ -8,16 +8,23 @@ const Navbar = () => {
   const { userToken, currentUser, clearToken, setCurrentUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleLogout = () => {
     clearToken();
     setCurrentUser(null);
     navigate('/');
     setIsMenuOpen(false);
+    setShowDropdown(false);
   };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleDropdown = () => {
+    setShowDropdown(prev => !prev);
   };
 
   const scrollToHowItWorks = () => {
@@ -30,13 +37,23 @@ const Navbar = () => {
 
   const isAuthenticated = !!userToken && !!currentUser;
 
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.logo}>
         <Link to="/">StuChama</Link>
       </div>
 
-      {/* Mobile menu button */}
       <div className={styles.menuButton} onClick={toggleMenu}>
         <div className={`${styles.menuLine} ${isMenuOpen ? styles.line1 : ''}`}></div>
         <div className={`${styles.menuLine} ${isMenuOpen ? styles.line2 : ''}`}></div>
@@ -45,29 +62,29 @@ const Navbar = () => {
 
       <div className={`${styles.navLinks} ${isMenuOpen ? styles.active : ''}`}>
         <Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
-        
-        {/* How It Works link */}
-        <a onClick={scrollToHowItWorks} className={styles.navLink}>
-          How It Works
-        </a>
+        <a onClick={scrollToHowItWorks} className={styles.navLink}>How It Works</a>
 
         {isAuthenticated ? (
-          <div className={styles.authLinks}>
-            <Link to="/dashboard" className={styles.dashboardBtn} onClick={() => setIsMenuOpen(false)}>
-              Dashboard
-            </Link>
-            <button onClick={handleLogout} className={styles.logoutBtn}>
-              Logout
-            </button>
+          <div className={styles.profileDropdown} ref={dropdownRef}>
+            <img
+              src={currentUser?.profile_picture || 'https://i.pravatar.cc/150?img=8'}
+              alt="Profile"
+              className={styles.profileIcon}
+              onClick={toggleDropdown}
+            />
+            {showDropdown && (
+              <div className={styles.dropdownMenu}>
+                <Link to="/dashboard" onClick={() => { setIsMenuOpen(false); setShowDropdown(false); }}>
+                  Dashboard
+                </Link>
+                <button onClick={handleLogout}>Logout</button>
+              </div>
+            )}
           </div>
         ) : (
           <div className={styles.authLinks}>
-            <Link to="/signup" className={styles.signupBtn} onClick={() => setIsMenuOpen(false)}>
-              Sign Up
-            </Link>
-            <Link to="/login" className={styles.loginBtn} onClick={() => setIsMenuOpen(false)}>
-              Log In
-            </Link>
+            <Link to="/signup" className={styles.signupBtn} onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
+            <Link to="/login" className={styles.loginBtn} onClick={() => setIsMenuOpen(false)}>Log In</Link>
           </div>
         )}
       </div>
