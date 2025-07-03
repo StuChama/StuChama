@@ -4,7 +4,8 @@ import styles from './ChairpersonGroupDetails.module.css';
 const ChairpersonGroupDetails = ({ chamaId }) => {
   const [groupDetails, setGroupDetails] = useState(null);
   const [members, setMembers] = useState([]);
-  const [newMember, setNewMember] = useState({ name: '', role: '' });
+  const [newMember, setNewMember] = useState({ phone: '', role: '' });
+
   const [isAddingMember, setIsAddingMember] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,35 +38,37 @@ const ChairpersonGroupDetails = ({ chamaId }) => {
   }, [chamaId]);
 
   const handleAddMember = async () => {
-    if (!newMember.name || !newMember.role) {
-      alert('Please enter both name and role');
-      return;
+  if (!newMember.phone || !newMember.role) {
+    alert('Please enter both phone number and role');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/members/add-by-phone`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone: newMember.phone,
+        group_id: chamaId,
+        role: newMember.role
+      }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.error || 'Failed to add member');
     }
 
-    try {
-      const searchRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/search?name=${encodeURIComponent(newMember.name)}`);
-      const users = await searchRes.json();
-      if (!users.length) throw new Error('User not found');
+    const added = await res.json();
+    setMembers(prev => [...prev, added]);
+    setNewMember({ phone: '', role: '' });
+    setIsAddingMember(false);
+  } catch (err) {
+    console.error('Error adding member:', err);
+    alert(err.message);
+  }
+};
 
-      const userId = users[0].user_id;
-
-      const addRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/members`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, group_id: chamaId, role: newMember.role })
-      });
-
-      if (!addRes.ok) throw new Error('Failed to add member');
-
-      const added = await addRes.json();
-      setMembers(prev => [...prev, { ...added, full_name: newMember.name }]);
-      setNewMember({ name: '', role: '' });
-      setIsAddingMember(false);
-    } catch (err) {
-      console.error('Error adding member:', err);
-      alert(err.message);
-    }
-  };
 
   const handleRemoveMember = async (memberId) => {
     if (!window.confirm('Are you sure you want to remove this member?')) return;
@@ -182,14 +185,14 @@ const ChairpersonGroupDetails = ({ chamaId }) => {
           <div className={styles.addMemberCard}>
             <h4 className={styles.addMemberTitle}>Add New Member</h4>
             <div className={styles.inputGroup}>
-              <label>Full Name</label>
-              <input
-                type="text"
-                placeholder="Enter full name"
-                value={newMember.name}
-                onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
-                className={styles.inputField}
-              />
+              <label>Phone Number</label>
+                <input  
+                  type="text"
+                  placeholder="e.g. 0712345678"
+                  value={newMember.phone}
+                  onChange={(e) => setNewMember({ ...newMember, phone: e.target.value })}
+                />
+
             </div>
             <div className={styles.inputGroup}>
               <label>Role</label>
@@ -201,13 +204,14 @@ const ChairpersonGroupDetails = ({ chamaId }) => {
                 <option value="">Select Role</option>
                 <option value="Member">Member</option>
                 <option value="Treasurer">Treasurer</option>
-                <option value="Secretary">Secretary</option>
+                
               </select>
             </div>
             <button 
               className={styles.addButton} 
               onClick={handleAddMember}
-              disabled={!newMember.full_name || !newMember.role}
+              disabled={!newMember.phone || !newMember.role}
+
             >
               Add to Group
             </button>

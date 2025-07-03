@@ -9,6 +9,7 @@ const chamaRoutes = require('./routes/chamaRoutes'); // Handles chama management
 const meetingRoutes = require('./routes/meetings'); // Handles meetings
 const mpesaRoutes = require('./routes/mpesaRoutes'); // Handles M-Pesa integration
 const reportRoutes = require('./routes/reportRoutes');
+const memberRoutes = require('./routes/memberRoutes');
 const pool = require('./db/pool'); // Ensure your db.js exports the pool
 
 const app = express();
@@ -24,6 +25,7 @@ app.use('/api/chamas', chamaRoutes);
 app.use('/api/meetings', meetingRoutes);
 app.use('/api/mpesa', mpesaRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/members', memberRoutes);
 
 
 // Root endpoint (optional for testing)
