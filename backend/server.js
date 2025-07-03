@@ -10,6 +10,7 @@ const meetingRoutes = require('./routes/meetings'); // Handles meetings
 const mpesaRoutes = require('./routes/mpesaRoutes'); // Handles M-Pesa integration
 const reportRoutes = require('./routes/reportRoutes');
 const memberRoutes = require('./routes/memberRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 const pool = require('./db/pool'); // Ensure your db.js exports the pool
 
 const app = express();
@@ -26,7 +27,7 @@ app.use('/api/meetings', meetingRoutes);
 app.use('/api/mpesa', mpesaRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/members', memberRoutes);
-
+app.use('/api/notifications', notificationRoutes);
 
 // Root endpoint (optional for testing)
 app.get('/', (req, res) => {

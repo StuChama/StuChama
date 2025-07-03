@@ -102,20 +102,30 @@ const getAllGroups = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch groups' });
   }
 };
-
+const { createFineNotification } = require('./notificationController');
 const addFine = async (req, res) => {
   const { user_id, amount, reason, status = 'Unpaid' } = req.body;
+  const groupId = req.params.groupId;
 
   if (!user_id || !amount || !reason) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
+    // 1. Add fine to database
     const newFine = await ChairpersonChamaModel.addFine(
-      req.params.groupId,
+      groupId,
       user_id,
       { amount, reason, status }
     );
+
+    // 2. Fetch group name for message
+    const groupRes = await pool.query(`SELECT group_name FROM groups WHERE group_id = $1`, [groupId]);
+    const groupName = groupRes.rows[0]?.group_name || 'your Chama';
+
+    // 3. Create notification
+    await createFineNotification(user_id, amount, groupName);
+
     res.status(201).json(newFine);
   } catch (error) {
     console.error('Error adding fine:', error);

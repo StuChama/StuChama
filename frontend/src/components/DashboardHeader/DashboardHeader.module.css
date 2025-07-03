@@ -78,3 +78,56 @@
 .backText {
   font-weight: 500;
 }
+
+.bellIcon {
+  font-size: 1.4rem;
+  color: #910510;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.bellIcon:hover {
+  color: #780009;
+}
+
+.notificationWrapper {
+  position: relative;
+}
+
+/* dropdown box styles remain the same */
+.dropdown {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  width: 260px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  padding: 10px;
+  z-index: 1000;
+}
+
+.dropdownTitle {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #910510;
+  font-size: 1rem;
+}
+
+.notificationItem {
+  background-color: #fdf0f0;
+  padding: 8px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.noNotifications {
+  color: #888;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 10px 0;
+}
