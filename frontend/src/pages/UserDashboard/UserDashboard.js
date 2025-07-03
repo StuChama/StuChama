@@ -105,16 +105,10 @@ const UserDashboard = () => {
 
   const handleCreateChama = async (chamaData) => {
     try {
-      const newGroup = await createGroup({
+      await createGroup({
         group_name: chamaData.name,
         description: chamaData.description,
         created_by: currentUser.user_id
-      });
-
-      await joinGroup({
-        user_id: currentUser.user_id,
-        group_id: newGroup.group_id,
-        role: 'Chairperson'
       });
 
       setShowCreateModal(false);
@@ -123,7 +117,6 @@ const UserDashboard = () => {
       alert('Error creating chama');
     }
   };
-
   const handleJoinChama = async (joinData) => {
     try {
       const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups?group_code=${joinData.code}`);
