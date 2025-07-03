@@ -114,6 +114,8 @@ const ContributionButton = ({ onClose, groupId, goalId, amount, fineId }) => {
           // if you want to refresh contributions you could call a prop callback here
         }
         onClose();
+        window.location.reload();
+
       } else {
         alert(`Payment failed: ${result.message || 'Please try again.'}`);
       }
