@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-
 import styles from './FineManagement.module.css';
 import { FaPlus, FaUser, FaMoneyBillWave, FaPen, FaCheck } from 'react-icons/fa';
 
 function FineManagement({ chamaId }) {
-  
   const [fines, setFines] = useState([]);
   const [members, setMembers] = useState([]);
   const [showAddFineModal, setShowAddFineModal] = useState(false);
@@ -18,32 +16,32 @@ function FineManagement({ chamaId }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // ✅ Extracted so it can be reused after delete
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const finesRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/fines`);
+      const finesData = await finesRes.json();
+
+      const membersRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/members`);
+      const membersData = await membersRes.json();
+
+      const enrichedFines = finesData.map(fine => {
+        const member = membersData.find(m => m.user_id === fine.user_id);
+        return { ...fine, memberName: member ? member.full_name : 'Unknown Member' };
+      });
+
+      setFines(enrichedFines);
+      setMembers(membersData);
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError('Failed to load data. Please try again.');
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const finesRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/fines`);
-        const finesData = await finesRes.json();
-
-        const membersRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/members`);
-        const membersData = await membersRes.json();
-        console.log('Members Data:', membersData);
-
-        const enrichedFines = finesData.map(fine => {
-          const member = membersData.find(m => m.user_id === fine.user_id);
-          return { ...fine, memberName: member ? member.full_name : 'Unknown Member' };
-        });
-
-        setFines(enrichedFines);
-        setMembers(membersData);
-        setIsLoading(false);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Failed to load data. Please try again.');
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
   }, [chamaId]);
 
@@ -80,13 +78,7 @@ function FineManagement({ chamaId }) {
 
       if (!response.ok) throw new Error('Failed to add fine');
 
-      const createdFine = await response.json();
-      const member = members.find(m => String(m.user_id) === String(createdFine.user_id));
-
-      setFines([...fines, {
-        ...createdFine,
-        memberName: member ? member.full_name : 'Unknown Member'
-      }]);
+      await fetchData(); // Refresh fines list
       setShowAddFineModal(false);
       setError('');
     } catch (err) {
@@ -105,9 +97,7 @@ function FineManagement({ chamaId }) {
 
       if (!response.ok) throw new Error('Failed to update fine');
 
-      setFines(fines.map(fine =>
-        fine.fine_id === fineId ? { ...fine, status: 'Paid' } : fine
-      ));
+      await fetchData(); // Refresh fines list
     } catch (err) {
       console.error('Error updating fine:', err);
       setError('Failed to update fine status.');
@@ -148,13 +138,7 @@ function FineManagement({ chamaId }) {
 
       if (!response.ok) throw new Error('Failed to update fine');
 
-      const updatedFine = await response.json();
-      const member = members.find(m => String(m.user_id) === String(updatedFine.user_id));
-
-      setFines(fines.map(fine =>
-        fine.fine_id === editFine.fine_id ? { ...updatedFine, memberName: member ? member.full_name : 'Unknown Member' } : fine
-      ));
-
+      await fetchData();
       setShowAddFineModal(false);
       setEditFine(null);
       setError('');
@@ -168,13 +152,13 @@ function FineManagement({ chamaId }) {
     if (!window.confirm('Are you sure you want to delete this fine?')) return;
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/fines/${fineId}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/fines/${fineId}`, {
         method: 'DELETE'
       });
 
       if (!response.ok) throw new Error('Failed to delete fine');
 
-      setFines(fines.filter(fine => fine.id !== fineId));
+      await fetchData(); // ✅ Refresh the data without page reload
     } catch (err) {
       console.error('Error deleting fine:', err);
       setError('Failed to delete fine.');
@@ -342,10 +326,7 @@ function FineManagement({ chamaId }) {
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className={styles.submitButton}
-                >
+                <button type="submit" className={styles.submitButton}>
                   {editFine ? 'Update Fine' : 'Add Fine'}
                 </button>
               </div>
