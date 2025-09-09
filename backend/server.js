@@ -42,6 +42,8 @@ app.use((req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
+console.log("DATABASE_URL from Render:", process.env.DATABASE_URL);
+
 
 app.listen(PORT, async () => {
   try {
