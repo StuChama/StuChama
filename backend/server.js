@@ -17,7 +17,7 @@ const app = express();
 
 // ✅ CORS setup
 const allowedOrigins = [
-  "https://stu-chama.netlify.app", // your Netlify frontend
+  "https://stuchama.netlify.app/",
   "http://localhost:3000"          // keep for local development
 ];
 
