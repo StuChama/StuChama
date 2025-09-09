@@ -25,7 +25,7 @@ const UploadMeetingNotes = ({ chamaId }) => {
 
   useEffect(() => {
     fetchNotes();
-  }, [chamaId]);
+  }, [fetchNotes]);
 
  
 

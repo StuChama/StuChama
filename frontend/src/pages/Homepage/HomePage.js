@@ -17,7 +17,7 @@ const HomePage = () => {
         </div>
 
         {/* How it Works Section */}
-        <div className="how-it-works">
+        <div id="how-it-works" className="how-it-works">
           <h2 className="section-title">HOW STUCHAMA WORKS</h2>
           
           <div className="steps-container">

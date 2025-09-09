@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styles from './FineManagement.module.css';
 import { FaPlus, FaUser, FaMoneyBillWave, FaPen, FaCheck } from 'react-icons/fa';
 
@@ -16,8 +16,8 @@ function FineManagement({ chamaId }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // ✅ Extracted so it can be reused after delete
-  const fetchData = async () => {
+  // ✅ Stable fetchData using useCallback
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       const finesRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chamas/groups/${chamaId}/fines`);
@@ -39,11 +39,12 @@ function FineManagement({ chamaId }) {
       setError('Failed to load data. Please try again.');
       setIsLoading(false);
     }
-  };
+  }, [chamaId]);
 
+  
   useEffect(() => {
     fetchData();
-  }, [chamaId]);
+  }, [fetchData]);
 
   const handleAddFine = () => {
     setShowAddFineModal(true);

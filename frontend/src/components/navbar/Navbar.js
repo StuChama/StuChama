@@ -62,7 +62,16 @@ const Navbar = () => {
 
       <div className={`${styles.navLinks} ${isMenuOpen ? styles.active : ''}`}>
         <Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
-        <a onClick={scrollToHowItWorks} className={styles.navLink}>How It Works</a>
+        <a
+          href="#how-it-works"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToHowItWorks();
+          }}
+          className={styles.navLink}
+        >
+          How It Works
+        </a>
 
         {isAuthenticated ? (
           <div className={styles.profileDropdown} ref={dropdownRef}>
