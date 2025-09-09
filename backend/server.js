@@ -15,8 +15,25 @@ const pool = require('./db/pool'); // Ensure your db.js exports the pool
 
 const app = express();
 
+// ✅ CORS setup
+const allowedOrigins = [
+  "https://stu-chama.netlify.app", // your Netlify frontend
+  "http://localhost:3000"          // keep for local development
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Routes
@@ -38,7 +55,6 @@ app.get('/', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
-
 
 // Start server
 const PORT = process.env.PORT || 5000;
